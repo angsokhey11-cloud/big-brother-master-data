@@ -1,1 +1,3580 @@
+<!DOCTYPE html>
 
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1"
+>
+
+<title>
+  BIG BROTHER — Expense Category Master
+</title>
+
+
+<style>
+
+:root{
+
+  --navy:#173f77;
+  --navy2:#204d86;
+
+  --blue:#2f69b8;
+
+  --bg:#eef3f8;
+
+  --card:#ffffff;
+
+  --line:#d7e2ee;
+
+  --text:#172b43;
+
+  --muted:#6f8195;
+
+  --green:#18864b;
+
+  --green-bg:#eaf8f0;
+
+  --red:#bd342b;
+
+  --red-bg:#fff0ef;
+
+  --orange:#a96d00;
+
+  --orange-bg:#fff6df;
+
+  --shadow:
+    0 6px 20px
+    rgba(
+      20,
+      55,
+      90,
+      .06
+    );
+
+}
+
+
+*{
+  box-sizing:border-box;
+}
+
+
+html,
+body{
+
+  margin:0;
+
+  min-height:100%;
+
+  background:
+    var(--bg);
+
+  color:
+    var(--text);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+}
+
+
+body{
+
+  padding:
+    18px;
+
+}
+
+
+body.embed{
+
+  padding:
+    10px;
+
+}
+
+
+body.embed .hero{
+
+  display:none;
+
+}
+
+
+button,
+input,
+select{
+
+  font:
+    inherit;
+
+}
+
+
+button{
+
+  cursor:pointer;
+
+}
+
+
+button:disabled{
+
+  cursor:not-allowed;
+
+  opacity:.55;
+
+}
+
+
+.app{
+
+  max-width:
+    1500px;
+
+  margin:
+    0 auto;
+
+}
+
+
+
+.hero{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    14px;
+
+  margin-bottom:
+    14px;
+
+}
+
+
+.hero h1{
+
+  margin:
+    0;
+
+  color:
+    var(--navy);
+
+  font-size:
+    24px;
+
+  font-weight:
+    900;
+
+}
+
+
+.hero p{
+
+  margin:
+    5px 0 0;
+
+  color:
+    var(--muted);
+
+  font-size:
+    12px;
+
+}
+
+
+.admin-pill{
+
+  border:
+    1px solid
+    #cbe2d3;
+
+  border-radius:
+    999px;
+
+  padding:
+    8px 12px;
+
+  background:
+    var(--green-bg);
+
+  color:
+    var(--green);
+
+  font-size:
+    10px;
+
+  font-weight:
+    900;
+
+  white-space:
+    nowrap;
+
+}
+
+
+
+.toolbar-card,
+.table-card{
+
+  border:
+    1px solid
+    var(--line);
+
+  border-radius:
+    14px;
+
+  background:
+    var(--card);
+
+  box-shadow:
+    var(--shadow);
+
+}
+
+
+.toolbar-card{
+
+  padding:
+    12px;
+
+  margin-bottom:
+    12px;
+
+}
+
+
+.toolbar-top{
+
+  display:flex;
+
+  justify-content:
+    space-between;
+
+  align-items:center;
+
+  gap:
+    12px;
+
+  margin-bottom:
+    10px;
+
+}
+
+
+.toolbar-title{
+
+  color:
+    var(--navy);
+
+  font-size:
+    15px;
+
+  font-weight:
+    900;
+
+}
+
+
+.toolbar-actions{
+
+  display:flex;
+
+  gap:
+    8px;
+
+  flex-wrap:
+    wrap;
+
+}
+
+
+.primary-btn,
+.secondary-btn,
+.danger-btn,
+.success-btn{
+
+  min-height:
+    40px;
+
+  border:
+    0;
+
+  border-radius:
+    9px;
+
+  padding:
+    8px 13px;
+
+  font-size:
+    11px;
+
+  font-weight:
+    900;
+
+}
+
+
+.primary-btn{
+
+  background:
+    var(--navy);
+
+  color:
+    #fff;
+
+}
+
+
+.secondary-btn{
+
+  background:
+    #e8eef6;
+
+  color:
+    #345572;
+
+}
+
+
+.danger-btn{
+
+  background:
+    var(--red-bg);
+
+  color:
+    var(--red);
+
+}
+
+
+.success-btn{
+
+  background:
+    var(--green-bg);
+
+  color:
+    var(--green);
+
+}
+
+
+.filters{
+
+  display:grid;
+
+  grid-template-columns:
+    minmax(230px,2fr)
+    minmax(190px,1fr)
+    minmax(160px,1fr);
+
+  gap:
+    8px;
+
+}
+
+
+.filters input,
+.filters select,
+.modal input,
+.modal select{
+
+  width:
+    100%;
+
+  min-height:
+    42px;
+
+  border:
+    1px solid
+    #cbd8e7;
+
+  border-radius:
+    9px;
+
+  background:
+    #fff;
+
+  padding:
+    8px 10px;
+
+  color:
+    var(--text);
+
+  outline:
+    none;
+
+}
+
+
+.filters input:focus,
+.filters select:focus,
+.modal input:focus,
+.modal select:focus{
+
+  border-color:
+    var(--blue);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      47,
+      105,
+      184,
+      .09
+    );
+
+}
+
+
+
+.summary-grid{
+
+  display:grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      1fr
+    );
+
+  gap:
+    9px;
+
+  margin-bottom:
+    12px;
+
+}
+
+
+.summary-card{
+
+  border:
+    1px solid
+    var(--line);
+
+  border-radius:
+    12px;
+
+  background:
+    #fff;
+
+  padding:
+    12px;
+
+  box-shadow:
+    var(--shadow);
+
+}
+
+
+.summary-card small{
+
+  display:block;
+
+  color:
+    var(--muted);
+
+  font-size:
+    8px;
+
+  font-weight:
+    900;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    .4px;
+
+}
+
+
+.summary-card strong{
+
+  display:block;
+
+  margin-top:
+    6px;
+
+  color:
+    var(--navy);
+
+  font-size:
+    21px;
+
+  font-weight:
+    900;
+
+}
+
+
+
+.table-card{
+
+  overflow:
+    hidden;
+
+}
+
+
+.table-head{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    10px;
+
+  padding:
+    12px 13px;
+
+  background:
+    var(--navy);
+
+  color:
+    #fff;
+
+}
+
+
+.table-head strong{
+
+  font-size:
+    13px;
+
+}
+
+
+.table-head span{
+
+  font-size:
+    10px;
+
+  opacity:
+    .85;
+
+}
+
+
+.table-wrap{
+
+  overflow:
+    auto;
+
+}
+
+
+table{
+
+  width:
+    100%;
+
+  border-collapse:
+    collapse;
+
+  min-width:
+    1100px;
+
+}
+
+
+th{
+
+  padding:
+    9px 10px;
+
+  border-bottom:
+    1px solid
+    var(--line);
+
+  background:
+    #f5f8fc;
+
+  color:
+    #5c7289;
+
+  text-align:
+    left;
+
+  font-size:
+    8px;
+
+  font-weight:
+    900;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    .25px;
+
+}
+
+
+td{
+
+  padding:
+    10px;
+
+  border-bottom:
+    1px solid
+    #edf1f5;
+
+  color:
+    #27415a;
+
+  font-size:
+    10px;
+
+  vertical-align:
+    middle;
+
+}
+
+
+tbody tr:hover{
+
+  background:
+    #fbfdff;
+
+}
+
+
+.category-id{
+
+  color:
+    var(--navy);
+
+  font-weight:
+    900;
+
+}
+
+
+.category-name{
+
+  color:
+    var(--text);
+
+  font-weight:
+    800;
+
+}
+
+
+.money{
+
+  text-align:
+    right;
+
+  font-weight:
+    800;
+
+}
+
+
+.badge{
+
+  display:
+    inline-flex;
+
+  align-items:
+    center;
+
+  border-radius:
+    999px;
+
+  padding:
+    5px 8px;
+
+  font-size:
+    8px;
+
+  font-weight:
+    900;
+
+  white-space:
+    nowrap;
+
+}
+
+
+.badge.active{
+
+  background:
+    var(--green-bg);
+
+  color:
+    var(--green);
+
+}
+
+
+.badge.inactive{
+
+  background:
+    var(--red-bg);
+
+  color:
+    var(--red);
+
+}
+
+
+.badge.review{
+
+  margin-left:
+    4px;
+
+  background:
+    var(--orange-bg);
+
+  color:
+    var(--orange);
+
+}
+
+
+.badge.protected{
+
+  margin-left:
+    4px;
+
+  background:
+    #edf3ff;
+
+  color:
+    var(--blue);
+
+}
+
+
+.row-actions{
+
+  display:flex;
+
+  gap:
+    6px;
+
+  flex-wrap:
+    wrap;
+
+}
+
+
+.row-btn{
+
+  min-height:
+    31px;
+
+  border:
+    0;
+
+  border-radius:
+    7px;
+
+  padding:
+    6px 9px;
+
+  font-size:
+    9px;
+
+  font-weight:
+    900;
+
+}
+
+
+.row-btn.edit{
+
+  background:
+    #eaf4ff;
+
+  color:
+    var(--blue);
+
+}
+
+
+.row-btn.off{
+
+  background:
+    var(--red-bg);
+
+  color:
+    var(--red);
+
+}
+
+
+.row-btn.on{
+
+  background:
+    var(--green-bg);
+
+  color:
+    var(--green);
+
+}
+
+
+.empty{
+
+  padding:
+    35px 15px;
+
+  color:
+    var(--muted);
+
+  text-align:
+    center;
+
+}
+
+
+.footer-note{
+
+  margin-top:
+    10px;
+
+  color:
+    var(--muted);
+
+  font-size:
+    9px;
+
+  line-height:
+    1.5;
+
+}
+
+
+
+.overlay{
+
+  position:
+    fixed;
+
+  inset:
+    0;
+
+  z-index:
+    9999;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  padding:
+    16px;
+
+  background:
+    rgba(
+      9,
+      25,
+      45,
+      .65
+    );
+
+}
+
+
+.overlay[hidden]{
+
+  display:
+    none;
+
+}
+
+
+.modal{
+
+  width:
+    min(
+      600px,
+      100%
+    );
+
+  max-height:
+    92vh;
+
+  overflow:
+    auto;
+
+  border-radius:
+    14px;
+
+  background:
+    #fff;
+
+  box-shadow:
+    0 24px 80px
+    rgba(
+      0,
+      0,
+      0,
+      .30
+    );
+
+}
+
+
+.modal-head{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    12px;
+
+  padding:
+    14px 15px;
+
+  border-bottom:
+    1px solid
+    var(--line);
+
+}
+
+
+.modal-head h2{
+
+  margin:
+    0;
+
+  color:
+    var(--navy);
+
+  font-size:
+    17px;
+
+}
+
+
+.close-btn{
+
+  width:
+    34px;
+
+  height:
+    34px;
+
+  border:
+    0;
+
+  border-radius:
+    8px;
+
+  background:
+    #eef3f8;
+
+  color:
+    #526b84;
+
+  font-weight:
+    900;
+
+}
+
+
+.modal-body{
+
+  padding:
+    15px;
+
+}
+
+
+.field{
+
+  margin-bottom:
+    12px;
+
+}
+
+
+.field label{
+
+  display:block;
+
+  margin-bottom:
+    5px;
+
+  color:
+    #526b84;
+
+  font-size:
+    9px;
+
+  font-weight:
+    900;
+
+  text-transform:
+    uppercase;
+
+}
+
+
+.field-help{
+
+  margin-top:
+    5px;
+
+  color:
+    var(--muted);
+
+  font-size:
+    9px;
+
+  line-height:
+    1.45;
+
+}
+
+
+.modal-message{
+
+  min-height:
+    19px;
+
+  margin:
+    4px 0 8px;
+
+  color:
+    var(--green);
+
+  font-size:
+    10px;
+
+  font-weight:
+    800;
+
+}
+
+
+.modal-message.error{
+
+  color:
+    var(--red);
+
+}
+
+
+.modal-actions{
+
+  display:flex;
+
+  justify-content:
+    flex-end;
+
+  gap:
+    8px;
+
+  margin-top:
+    10px;
+
+}
+
+
+.loading-screen{
+
+  min-height:
+    65vh;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+}
+
+
+.loading-card{
+
+  border:
+    1px solid
+    var(--line);
+
+  border-radius:
+    14px;
+
+  background:
+    #fff;
+
+  padding:
+    22px 26px;
+
+  color:
+    var(--navy);
+
+  font-size:
+    13px;
+
+  font-weight:
+    900;
+
+  box-shadow:
+    var(--shadow);
+
+}
+
+
+.error-card{
+
+  border:
+    1px solid
+    #f1c2bd;
+
+  border-radius:
+    12px;
+
+  background:
+    var(--red-bg);
+
+  color:
+    var(--red);
+
+  padding:
+    15px;
+
+  font-size:
+    11px;
+
+  font-weight:
+    800;
+
+  line-height:
+    1.5;
+
+}
+
+
+
+@media(
+  max-width:900px
+){
+
+  .summary-grid{
+
+    grid-template-columns:
+      1fr 1fr;
+
+  }
+
+
+  .filters{
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+}
+
+
+@media(
+  max-width:560px
+){
+
+  body{
+
+    padding:
+      8px;
+
+  }
+
+
+  .hero{
+
+    display:block;
+
+  }
+
+
+  .admin-pill{
+
+    display:
+      inline-block;
+
+    margin-top:
+      9px;
+
+  }
+
+
+  .summary-grid{
+
+    grid-template-columns:
+      1fr;
+
+  }
+
+
+  .toolbar-top{
+
+    display:block;
+
+  }
+
+
+  .toolbar-actions{
+
+    margin-top:
+      9px;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+
+
+<body>
+
+
+<div class="app">
+
+
+  <div class="hero">
+
+    <div>
+
+      <h1>
+        🗂️ BIG BROTHER — Expense Category Master
+      </h1>
+
+      <p>
+        Master Data → Expense Categories → Admin Management
+      </p>
+
+    </div>
+
+    <div class="admin-pill">
+      🔐 Admin Only
+    </div>
+
+  </div>
+
+
+
+  <div
+    class="loading-screen"
+    id="loadingScreen"
+  >
+
+    <div class="loading-card">
+      Loading Expense Category Master…
+    </div>
+
+  </div>
+
+
+
+  <main
+    id="mainContent"
+    hidden
+  >
+
+
+    <section class="toolbar-card">
+
+
+      <div class="toolbar-top">
+
+        <div class="toolbar-title">
+          Expense Categories
+        </div>
+
+
+        <div class="toolbar-actions">
+
+          <button
+            type="button"
+            class="secondary-btn"
+            id="refreshBtn"
+          >
+            ↻ Refresh
+          </button>
+
+
+          <button
+            type="button"
+            class="primary-btn"
+            id="newCategoryBtn"
+          >
+            + New Category
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="filters">
+
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search Category ID or Name..."
+          autocomplete="off"
+        >
+
+
+        <select id="typeFilter">
+
+          <option value="">
+            All Expense Types
+          </option>
+
+          <option value="OPERATING EXPENSE">
+            Operating Expense
+          </option>
+
+          <option value="NON-OPERATING EXPENSE">
+            Non-Operating Expense
+          </option>
+
+          <option value="CAPITAL EXPENSE">
+            Capital Expense
+          </option>
+
+        </select>
+
+
+        <select id="statusFilter">
+
+          <option value="">
+            All Status
+          </option>
+
+          <option value="ACTIVE">
+            Active
+          </option>
+
+          <option value="INACTIVE">
+            Inactive
+          </option>
+
+          <option value="REVIEW">
+            Review Required
+          </option>
+
+        </select>
+
+      </div>
+
+
+    </section>
+
+
+
+    <section class="summary-grid">
+
+
+      <div class="summary-card">
+
+        <small>
+          Total Categories
+        </small>
+
+        <strong id="totalCount">
+          0
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <small>
+          Active
+        </small>
+
+        <strong id="activeCount">
+          0
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <small>
+          Inactive
+        </small>
+
+        <strong id="inactiveCount">
+          0
+        </strong>
+
+      </div>
+
+
+      <div class="summary-card">
+
+        <small>
+          Review Required
+        </small>
+
+        <strong id="reviewCount">
+          0
+        </strong>
+
+      </div>
+
+
+    </section>
+
+
+
+    <section class="table-card">
+
+
+      <div class="table-head">
+
+        <strong>
+          Expense Category Master
+        </strong>
+
+        <span id="tableCount">
+          0 categories
+        </span>
+
+      </div>
+
+
+      <div class="table-wrap">
+
+
+        <table>
+
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Category ID
+              </th>
+
+              <th>
+                Category
+              </th>
+
+              <th>
+                Expense Type
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              <th>
+                Used
+              </th>
+
+              <th>
+                Historical Value
+              </th>
+
+              <th>
+                Last Used
+              </th>
+
+              <th>
+                Action
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody id="categoryRows">
+
+            <tr>
+
+              <td
+                colspan="8"
+                class="empty"
+              >
+                Loading...
+              </td>
+
+            </tr>
+
+          </tbody>
+
+
+        </table>
+
+
+      </div>
+
+
+    </section>
+
+
+    <div class="footer-note">
+
+      Expense Categories are Master Data.
+      Deactivating a category prevents new Expenses from using it,
+      but existing Expense History is preserved.
+      Permanent delete is intentionally not available.
+      Inventory Write-Off is protected because it is used by automated
+      Damage Accounting.
+
+    </div>
+
+
+  </main>
+
+
+
+  <div
+    id="errorBox"
+    class="error-card"
+    hidden
+  ></div>
+
+
+</div>
+
+
+
+<!-- ======================================================
+     CREATE / EDIT MODAL
+     ====================================================== -->
+
+<div
+  class="overlay"
+  id="categoryModal"
+  hidden
+>
+
+
+  <div class="modal">
+
+
+    <div class="modal-head">
+
+      <h2 id="modalTitle">
+        New Expense Category
+      </h2>
+
+      <button
+        type="button"
+        class="close-btn"
+        id="modalCloseBtn"
+      >
+        ✕
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+
+      <input
+        id="editCategoryId"
+        type="hidden"
+      >
+
+
+      <div class="field">
+
+        <label for="categoryName">
+          Category Name
+        </label>
+
+        <input
+          id="categoryName"
+          type="text"
+          autocomplete="off"
+          placeholder="Example: Security Expense"
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label for="categoryType">
+          Expense Type
+        </label>
+
+        <select id="categoryType">
+
+          <option value="OPERATING EXPENSE">
+            Operating Expense
+          </option>
+
+          <option value="NON-OPERATING EXPENSE">
+            Non-Operating Expense
+          </option>
+
+          <option value="CAPITAL EXPENSE">
+            Capital Expense
+          </option>
+
+        </select>
+
+
+        <div class="field-help">
+
+          Changing a Category Type affects future Expenses.
+          Existing Expense transactions keep their original Expense Type.
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="modal-message"
+        id="modalMessage"
+      ></div>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="secondary-btn"
+          id="modalCancelBtn"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="primary-btn"
+          id="modalSaveBtn"
+        >
+          Save Category
+        </button>
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+</div>
+
+
+
+<script>
+
+(function(){
+
+  "use strict";
+
+
+  /* =======================================================
+     SUPABASE
+     ======================================================= */
+
+  const SUPABASE_URL =
+    "https://sjfhlaclgmkwwofzstok.supabase.co";
+
+
+  const SUPABASE_KEY =
+    "sb_publishable_w762jR65CWwlO30fKQsYOw_6L9grx8S";
+
+
+  const SESSION_KEY =
+    "BB_SUPABASE_DEV_SESSION_V1";
+
+
+  let session =
+    null;
+
+
+  let categories =
+    [];
+
+
+  let report =
+    null;
+
+
+
+  const $ =
+    function(id){
+
+      return document.getElementById(
+        id
+      );
+
+    };
+
+
+
+  const clean =
+    function(value){
+
+      return String(
+        value == null
+          ? ""
+          : value
+      )
+      .trim();
+
+    };
+
+
+
+  const esc =
+    function(value){
+
+      return clean(value)
+
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+
+        .replace(
+          /</g,
+          "&lt;"
+        )
+
+        .replace(
+          />/g,
+          "&gt;"
+        )
+
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+
+    };
+
+
+
+  /* =======================================================
+     EMBED
+     ======================================================= */
+
+  const params =
+    new URLSearchParams(
+      location.search
+    );
+
+
+  if(
+    params.get("embed") === "1"
+    ||
+    params.get("shellModule")
+  ){
+
+    document.body.classList.add(
+      "embed"
+    );
+
+  }
+
+
+
+  /* =======================================================
+     SESSION
+     ======================================================= */
+
+  function readSession(){
+
+    try{
+
+      return JSON.parse(
+        localStorage.getItem(
+          SESSION_KEY
+        )
+        ||
+        "null"
+      );
+
+    }catch(_){
+
+      return null;
+
+    }
+
+  }
+
+
+
+  function saveSession(value){
+
+    session =
+      value || null;
+
+
+    try{
+
+      if(
+        !value
+      ){
+
+        localStorage.removeItem(
+          SESSION_KEY
+        );
+
+        return;
+
+      }
+
+
+      if(
+        !value.expires_at
+        &&
+        value.expires_in
+      ){
+
+        value.expires_at =
+
+          Math.floor(
+            Date.now() / 1000
+          )
+
+          +
+
+          Number(
+            value.expires_in
+          );
+
+      }
+
+
+      localStorage.setItem(
+
+        SESSION_KEY,
+
+        JSON.stringify(
+          value
+        )
+
+      );
+
+    }catch(_){}
+
+  }
+
+
+
+  async function parseResponse(
+    response
+  ){
+
+    const text =
+      await response.text();
+
+
+    let data =
+      {};
+
+
+    try{
+
+      data =
+        text
+          ? JSON.parse(text)
+          : {};
+
+    }catch(_){
+
+      data = {
+        message:text
+      };
+
+    }
+
+
+    if(
+      !response.ok
+    ){
+
+      throw new Error(
+
+        data.message
+
+        ||
+
+        data.error_description
+
+        ||
+
+        data.error
+
+        ||
+
+        (
+          "Supabase request failed ("
+          +
+          response.status
+          +
+          ")"
+        )
+
+      );
+
+    }
+
+
+    return data;
+
+  }
+
+
+
+  async function refreshSession(){
+
+    const current =
+      readSession();
+
+
+    if(
+      !current
+      ||
+      !current.refresh_token
+    ){
+
+      throw new Error(
+        "Please sign in to BIG BROTHER Dashboard first."
+      );
+
+    }
+
+
+    const response =
+      await fetch(
+
+        SUPABASE_URL
+        +
+        "/auth/v1/token?grant_type=refresh_token",
+
+        {
+
+          method:
+            "POST",
+
+          headers:{
+
+            apikey:
+              SUPABASE_KEY,
+
+            "Content-Type":
+              "application/json"
+
+          },
+
+          body:
+            JSON.stringify({
+
+              refresh_token:
+                current.refresh_token
+
+            }),
+
+          cache:
+            "no-store"
+
+        }
+
+      );
+
+
+    const next =
+      await parseResponse(
+        response
+      );
+
+
+    saveSession(
+      next
+    );
+
+
+    return next;
+
+  }
+
+
+
+  async function ensureSession(){
+
+    session =
+      readSession();
+
+
+    if(
+      !session
+      ||
+      !session.access_token
+    ){
+
+      throw new Error(
+        "Please sign in to BIG BROTHER Dashboard first."
+      );
+
+    }
+
+
+    const now =
+      Math.floor(
+        Date.now() / 1000
+      );
+
+
+    if(
+      session.expires_at
+      &&
+      Number(
+        session.expires_at
+      )
+      <
+      now + 45
+    ){
+
+      await refreshSession();
+
+    }
+
+
+    return session;
+
+  }
+
+
+
+  async function rpc(
+    functionName,
+    args
+  ){
+
+    await ensureSession();
+
+
+    async function call(){
+
+      return fetch(
+
+        SUPABASE_URL
+        +
+        "/rest/v1/rpc/"
+        +
+        functionName,
+
+        {
+
+          method:
+            "POST",
+
+          headers:{
+
+            apikey:
+              SUPABASE_KEY,
+
+            Authorization:
+              "Bearer "
+              +
+              session.access_token,
+
+            "Content-Type":
+              "application/json"
+
+          },
+
+          body:
+            JSON.stringify(
+              args || {}
+            ),
+
+          cache:
+            "no-store"
+
+        }
+
+      );
+
+    }
+
+
+    let response =
+      await call();
+
+
+    if(
+      response.status === 401
+    ){
+
+      await refreshSession();
+
+      response =
+        await call();
+
+    }
+
+
+    return parseResponse(
+      response
+    );
+
+  }
+
+
+
+  /* =======================================================
+     FORMATTING
+     ======================================================= */
+
+  function formatUSD(
+    value
+  ){
+
+    const number =
+      Number(
+        value
+      );
+
+
+    return "$"
+      +
+      (
+        Number.isFinite(number)
+          ? number
+          : 0
+      )
+      .toLocaleString(
+
+        "en-US",
+
+        {
+
+          minimumFractionDigits:
+            2,
+
+          maximumFractionDigits:
+            2
+
+        }
+
+      );
+
+  }
+
+
+
+  function formatDate(
+    value
+  ){
+
+    const raw =
+      clean(value);
+
+
+    if(
+      !raw
+    ){
+
+      return "-";
+
+    }
+
+
+    const match =
+      raw.match(
+        /^(\d{4})-(\d{2})-(\d{2})/
+      );
+
+
+    if(
+      !match
+    ){
+
+      return raw;
+
+    }
+
+
+    const months = [
+
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+
+    ];
+
+
+    return (
+
+      match[3]
+      +
+      "-"
+      +
+      months[
+        Number(match[2]) - 1
+      ]
+      +
+      "-"
+      +
+      match[1]
+
+    );
+
+  }
+
+
+
+  function displayType(
+    value
+  ){
+
+    const type =
+      clean(value);
+
+
+    if(
+      type ===
+      "NON-OPERATING EXPENSE"
+    ){
+
+      return "Non-Operating Expense";
+
+    }
+
+
+    if(
+      type ===
+      "CAPITAL EXPENSE"
+    ){
+
+      return "Capital Expense";
+
+    }
+
+
+    return "Operating Expense";
+
+  }
+
+
+
+  /* =======================================================
+     STATUS / ERROR
+     ======================================================= */
+
+  function showError(
+    message
+  ){
+
+    $("loadingScreen").hidden =
+      true;
+
+
+    $("mainContent").hidden =
+      true;
+
+
+    $("errorBox").textContent =
+      clean(message);
+
+
+    $("errorBox").hidden =
+      false;
+
+  }
+
+
+
+  function setModalMessage(
+    message,
+    error
+  ){
+
+    $("modalMessage").textContent =
+      clean(message);
+
+
+    $("modalMessage")
+      .classList
+      .toggle(
+        "error",
+        !!error
+      );
+
+  }
+
+
+
+  /* =======================================================
+     LOAD MASTER DATA
+     ======================================================= */
+
+  async function loadCategories(){
+
+    $("errorBox").hidden =
+      true;
+
+
+    try{
+
+
+      const data =
+        await rpc(
+
+          "bb_master_expense_categories_admin_list",
+
+          {}
+
+        );
+
+
+      if(
+        !data
+        ||
+        data.success !== true
+      ){
+
+        throw new Error(
+          "Could not load Expense Category Master."
+        );
+
+      }
+
+
+      report =
+        data;
+
+
+      categories =
+        Array.isArray(
+          data.categories
+        )
+          ? data.categories
+          : [];
+
+
+      const summary =
+        data.summary
+        ||
+        {};
+
+
+      $("totalCount").textContent =
+        Number(
+          summary.total || 0
+        )
+        .toLocaleString(
+          "en-US"
+        );
+
+
+      $("activeCount").textContent =
+        Number(
+          summary.active || 0
+        )
+        .toLocaleString(
+          "en-US"
+        );
+
+
+      $("inactiveCount").textContent =
+        Number(
+          summary.inactive || 0
+        )
+        .toLocaleString(
+          "en-US"
+        );
+
+
+      $("reviewCount").textContent =
+        Number(
+          summary.reviewRequired || 0
+        )
+        .toLocaleString(
+          "en-US"
+        );
+
+
+      renderRows();
+
+
+      $("loadingScreen").hidden =
+        true;
+
+
+      $("mainContent").hidden =
+        false;
+
+
+    }catch(error){
+
+
+      showError(
+
+        error
+        &&
+        error.message
+          ? error.message
+          : "Could not load Expense Category Master."
+
+      );
+
+    }
+
+  }
+
+
+
+  /* =======================================================
+     FILTER
+     ======================================================= */
+
+  function filteredCategories(){
+
+    const search =
+      clean(
+        $("searchInput").value
+      )
+      .toLowerCase();
+
+
+    const type =
+      clean(
+        $("typeFilter").value
+      );
+
+
+    const status =
+      clean(
+        $("statusFilter").value
+      );
+
+
+    return categories.filter(
+      function(category){
+
+
+        if(
+          type
+          &&
+          clean(
+            category.expenseType
+          )
+          !==
+          type
+        ){
+
+          return false;
+
+        }
+
+
+        if(
+          status === "ACTIVE"
+          &&
+          category.active !== true
+        ){
+
+          return false;
+
+        }
+
+
+        if(
+          status === "INACTIVE"
+          &&
+          category.active !== false
+        ){
+
+          return false;
+
+        }
+
+
+        if(
+          status === "REVIEW"
+          &&
+          category.migrationReviewRequired !== true
+        ){
+
+          return false;
+
+        }
+
+
+        if(
+          search
+        ){
+
+          const haystack = [
+
+            category.categoryId,
+
+            category.category,
+
+            category.expenseType,
+
+            category.migrationNote
+
+          ]
+          .map(
+            clean
+          )
+          .join(
+            " "
+          )
+          .toLowerCase();
+
+
+          if(
+            !haystack.includes(
+              search
+            )
+          ){
+
+            return false;
+
+          }
+
+        }
+
+
+        return true;
+
+      }
+    );
+
+  }
+
+
+
+  /* =======================================================
+     RENDER
+     ======================================================= */
+
+  function renderRows(){
+
+    const rows =
+      filteredCategories();
+
+
+    $("tableCount").textContent =
+
+      rows.length.toLocaleString(
+        "en-US"
+      )
+
+      +
+
+      (
+        rows.length === 1
+          ? " category"
+          : " categories"
+      );
+
+
+    if(
+      !rows.length
+    ){
+
+      $("categoryRows").innerHTML =
+
+        '<tr>'
+        +
+        '<td colspan="8" class="empty">'
+        +
+        'No Expense Categories match the current filters.'
+        +
+        '</td>'
+        +
+        '</tr>';
+
+
+      return;
+
+    }
+
+
+    $("categoryRows").innerHTML =
+
+      rows
+      .map(
+        function(category){
+
+
+          const statusBadge =
+
+            category.active
+
+              ? '<span class="badge active">ACTIVE</span>'
+
+              : '<span class="badge inactive">INACTIVE</span>';
+
+
+          const reviewBadge =
+
+            category.migrationReviewRequired
+
+              ? '<span class="badge review">REVIEW</span>'
+
+              : "";
+
+
+          const protectedBadge =
+
+            category.systemProtected
+
+              ? '<span class="badge protected">🔒 SYSTEM</span>'
+
+              : "";
+
+
+          let actions;
+
+
+          if(
+            category.systemProtected
+          ){
+
+            actions =
+
+              '<span class="badge protected">'
+              +
+              'Protected'
+              +
+              '</span>';
+
+          }else{
+
+            actions =
+
+              '<div class="row-actions">'
+
+              +
+
+              '<button '
+              +
+              'type="button" '
+              +
+              'class="row-btn edit" '
+              +
+              'data-action="edit" '
+              +
+              'data-category-id="'
+              +
+              esc(
+                category.categoryId
+              )
+              +
+              '">'
+              +
+              '✏️ Edit'
+              +
+              '</button>'
+
+              +
+
+              (
+                category.active
+
+                  ? (
+                    '<button '
+                    +
+                    'type="button" '
+                    +
+                    'class="row-btn off" '
+                    +
+                    'data-action="deactivate" '
+                    +
+                    'data-category-id="'
+                    +
+                    esc(
+                      category.categoryId
+                    )
+                    +
+                    '">'
+                    +
+                    '⛔ Deactivate'
+                    +
+                    '</button>'
+                  )
+
+                  : (
+                    '<button '
+                    +
+                    'type="button" '
+                    +
+                    'class="row-btn on" '
+                    +
+                    'data-action="activate" '
+                    +
+                    'data-category-id="'
+                    +
+                    esc(
+                      category.categoryId
+                    )
+                    +
+                    '">'
+                    +
+                    '✅ Reactivate'
+                    +
+                    '</button>'
+                  )
+              )
+
+              +
+
+              '</div>';
+
+          }
+
+
+          return (
+
+            "<tr>"
+
+            +
+
+            '<td class="category-id">'
+            +
+            esc(
+              category.categoryId
+            )
+            +
+            "</td>"
+
+            +
+
+            '<td class="category-name">'
+            +
+            esc(
+              category.category
+            )
+            +
+            protectedBadge
+            +
+            (
+              category.migrationReviewRequired
+                ? '<div class="field-help">'
+                  +
+                  esc(
+                    category.migrationNote
+                  )
+                  +
+                  '</div>'
+                : ""
+            )
+            +
+            "</td>"
+
+            +
+
+            "<td>"
+            +
+            esc(
+              displayType(
+                category.expenseType
+              )
+            )
+            +
+            "</td>"
+
+            +
+
+            "<td>"
+            +
+            statusBadge
+            +
+            reviewBadge
+            +
+            "</td>"
+
+            +
+
+            "<td>"
+            +
+            Number(
+              category.usageCount || 0
+            )
+            .toLocaleString(
+              "en-US"
+            )
+            +
+            "</td>"
+
+            +
+
+            '<td class="money">'
+            +
+            esc(
+              formatUSD(
+                category.usageAmountUSD
+              )
+            )
+            +
+            "</td>"
+
+            +
+
+            "<td>"
+            +
+            esc(
+              formatDate(
+                category.lastUsedDate
+              )
+            )
+            +
+            "</td>"
+
+            +
+
+            "<td>"
+            +
+            actions
+            +
+            "</td>"
+
+            +
+
+            "</tr>"
+
+          );
+
+        }
+      )
+      .join(
+        ""
+      );
+
+
+    $("categoryRows")
+      .querySelectorAll(
+        "[data-action]"
+      )
+      .forEach(
+        function(button){
+
+
+          button.addEventListener(
+            "click",
+            function(){
+
+
+              const categoryId =
+                clean(
+                  button.dataset.categoryId
+                );
+
+
+              const action =
+                clean(
+                  button.dataset.action
+                );
+
+
+              if(
+                action === "edit"
+              ){
+
+                openEditModal(
+                  categoryId
+                );
+
+              }else if(
+                action === "activate"
+              ){
+
+                setCategoryActive(
+                  categoryId,
+                  true
+                );
+
+              }else if(
+                action === "deactivate"
+              ){
+
+                setCategoryActive(
+                  categoryId,
+                  false
+                );
+
+              }
+
+            }
+          );
+
+        }
+      );
+
+  }
+
+
+
+  /* =======================================================
+     CATEGORY LOOKUP
+     ======================================================= */
+
+  function categoryById(
+    categoryId
+  ){
+
+    const id =
+      clean(
+        categoryId
+      );
+
+
+    return categories.find(
+      function(category){
+
+        return (
+          clean(
+            category.categoryId
+          )
+          ===
+          id
+        );
+
+      }
+    )
+    ||
+    null;
+
+  }
+
+
+
+  /* =======================================================
+     CREATE MODAL
+     ======================================================= */
+
+  function openCreateModal(){
+
+    $("modalTitle").textContent =
+      "➕ New Expense Category";
+
+
+    $("editCategoryId").value =
+      "";
+
+
+    $("categoryName").value =
+      "";
+
+
+    $("categoryType").value =
+      "OPERATING EXPENSE";
+
+
+    $("modalSaveBtn").textContent =
+      "Save Category";
+
+
+    setModalMessage(
+      "",
+      false
+    );
+
+
+    $("categoryModal").hidden =
+      false;
+
+
+    setTimeout(
+      function(){
+
+        $("categoryName").focus();
+
+      },
+      30
+    );
+
+  }
+
+
+
+  /* =======================================================
+     EDIT MODAL
+     ======================================================= */
+
+  function openEditModal(
+    categoryId
+  ){
+
+    const category =
+      categoryById(
+        categoryId
+      );
+
+
+    if(
+      !category
+      ||
+      category.systemProtected
+    ){
+
+      return;
+
+    }
+
+
+    $("modalTitle").textContent =
+      "✏️ Edit Expense Category";
+
+
+    $("editCategoryId").value =
+      category.categoryId;
+
+
+    $("categoryName").value =
+      category.category;
+
+
+    $("categoryType").value =
+      category.expenseType;
+
+
+    $("modalSaveBtn").textContent =
+      "Save Changes";
+
+
+    setModalMessage(
+      "",
+      false
+    );
+
+
+    $("categoryModal").hidden =
+      false;
+
+
+    setTimeout(
+      function(){
+
+        $("categoryName").focus();
+
+      },
+      30
+    );
+
+  }
+
+
+
+  function closeModal(){
+
+    $("categoryModal").hidden =
+      true;
+
+  }
+
+
+
+  /* =======================================================
+     SAVE CATEGORY
+     ======================================================= */
+
+  async function saveCategory(){
+
+    const categoryId =
+      clean(
+        $("editCategoryId").value
+      );
+
+
+    const categoryName =
+      clean(
+        $("categoryName").value
+      );
+
+
+    const expenseType =
+      clean(
+        $("categoryType").value
+      );
+
+
+    if(
+      !categoryName
+    ){
+
+      setModalMessage(
+        "Category Name is required.",
+        true
+      );
+
+      return;
+
+    }
+
+
+    const button =
+      $("modalSaveBtn");
+
+
+    const oldText =
+      button.textContent;
+
+
+    button.disabled =
+      true;
+
+
+    button.textContent =
+      "Saving...";
+
+
+    setModalMessage(
+      "Saving Expense Category...",
+      false
+    );
+
+
+    try{
+
+
+      let result;
+
+
+      if(
+        categoryId
+      ){
+
+        result =
+          await rpc(
+
+            "bb_master_expense_category_admin_update",
+
+            {
+
+              p_payload:{
+
+                categoryId:
+                  categoryId,
+
+                categoryName:
+                  categoryName,
+
+                expenseType:
+                  expenseType
+
+              }
+
+            }
+
+          );
+
+      }else{
+
+        result =
+          await rpc(
+
+            "bb_master_expense_category_admin_create",
+
+            {
+
+              p_payload:{
+
+                categoryName:
+                  categoryName,
+
+                expenseType:
+                  expenseType
+
+              }
+
+            }
+
+          );
+
+      }
+
+
+      if(
+        !result
+        ||
+        result.success !== true
+      ){
+
+        throw new Error(
+          "Could not save Expense Category."
+        );
+
+      }
+
+
+      setModalMessage(
+        "Expense Category saved successfully.",
+        false
+      );
+
+
+      await loadCategories();
+
+
+      setTimeout(
+        function(){
+
+          closeModal();
+
+        },
+        300
+      );
+
+
+    }catch(error){
+
+
+      setModalMessage(
+
+        error
+        &&
+        error.message
+          ? error.message
+          : "Could not save Expense Category.",
+
+        true
+
+      );
+
+
+    }finally{
+
+
+      button.disabled =
+        false;
+
+
+      button.textContent =
+        oldText;
+
+    }
+
+  }
+
+
+
+  /* =======================================================
+     ACTIVATE / DEACTIVATE
+     ======================================================= */
+
+  async function setCategoryActive(
+    categoryId,
+    active
+  ){
+
+    const category =
+      categoryById(
+        categoryId
+      );
+
+
+    if(
+      !category
+      ||
+      category.systemProtected
+    ){
+
+      return;
+
+    }
+
+
+    const actionText =
+      active
+        ? "reactivate"
+        : "deactivate";
+
+
+    const confirmed =
+      window.confirm(
+
+        (
+          active
+            ? "Reactivate "
+            : "Deactivate "
+        )
+
+        +
+
+        '"'
+        +
+        category.category
+        +
+        '"?'
+
+        +
+
+        (
+          active
+
+            ? "\n\nThis Category will become available for new Expenses again."
+
+            : "\n\nExisting Expense History will remain unchanged."
+
+        )
+
+      );
+
+
+    if(
+      !confirmed
+    ){
+
+      return;
+
+    }
+
+
+    try{
+
+
+      const result =
+        await rpc(
+
+          "bb_master_expense_category_admin_set_active",
+
+          {
+
+            p_payload:{
+
+              categoryId:
+                categoryId,
+
+              active:
+                active
+
+            }
+
+          }
+
+        );
+
+
+      if(
+        !result
+        ||
+        result.success !== true
+      ){
+
+        throw new Error(
+          "Could not "
+          +
+          actionText
+          +
+          " Expense Category."
+        );
+
+      }
+
+
+      await loadCategories();
+
+
+    }catch(error){
+
+
+      window.alert(
+
+        error
+        &&
+        error.message
+          ? error.message
+          : (
+            "Could not "
+            +
+            actionText
+            +
+            " Expense Category."
+          )
+
+      );
+
+    }
+
+  }
+
+
+
+  /* =======================================================
+     EVENTS
+     ======================================================= */
+
+  [
+    "searchInput",
+    "typeFilter",
+    "statusFilter"
+  ]
+  .forEach(
+    function(id){
+
+
+      const element =
+        $(id);
+
+
+      element.addEventListener(
+
+        id === "searchInput"
+          ? "input"
+          : "change",
+
+        renderRows
+
+      );
+
+    }
+  );
+
+
+  $("refreshBtn")
+    .addEventListener(
+      "click",
+      loadCategories
+    );
+
+
+  $("newCategoryBtn")
+    .addEventListener(
+      "click",
+      openCreateModal
+    );
+
+
+  $("modalCloseBtn")
+    .addEventListener(
+      "click",
+      closeModal
+    );
+
+
+  $("modalCancelBtn")
+    .addEventListener(
+      "click",
+      closeModal
+    );
+
+
+  $("modalSaveBtn")
+    .addEventListener(
+      "click",
+      saveCategory
+    );
+
+
+  $("categoryName")
+    .addEventListener(
+      "keydown",
+      function(event){
+
+        if(
+          event.key === "Enter"
+        ){
+
+          event.preventDefault();
+
+          saveCategory();
+
+        }
+
+      }
+    );
+
+
+  $("categoryModal")
+    .addEventListener(
+      "click",
+      function(event){
+
+        if(
+          event.target ===
+          $("categoryModal")
+        ){
+
+          closeModal();
+
+        }
+
+      }
+    );
+
+
+  document.addEventListener(
+    "keydown",
+    function(event){
+
+      if(
+        event.key === "Escape"
+      ){
+
+        closeModal();
+
+      }
+
+    }
+  );
+
+
+
+  /* =======================================================
+     START
+     ======================================================= */
+
+  loadCategories();
+
+
+})();
+
+</script>
+
+
+</body>
+
+</html>

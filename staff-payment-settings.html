@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BIG BROTHER — Staff Payment Settings</title>
+
+<style>
+:root{
+  --navy:#173f77;
+  --blue:#2f69b8;
+  --bg:#eef3f8;
+  --card:#ffffff;
+  --line:#d7e2ee;
+  --text:#172b43;
+  --muted:#6f8195;
+  --green:#18864b;
+  --green-bg:#eaf8f0;
+  --red:#bd342b;
+  --red-bg:#fff0ef;
+  --orange:#a96d00;
+  --orange-bg:#fff6df;
+  --purple:#7150a5;
+  --purple-bg:#f3effb;
+  --shadow:0 6px 20px rgba(20,55,90,.06);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  min-height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+}
+body{padding:18px}
+body.embed{padding:10px}
+body.embed .hero{display:none}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.55}
+.app{max-width:1550px;margin:0 auto}
+
+.hero{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:14px;
+}
+.hero h1{
+  margin:0;
+  color:var(--navy);
+  font-size:24px;
+  font-weight:900;
+}
+.hero p{
+  margin:5px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+.admin-pill{
+  border:1px solid #cbe2d3;
+  border-radius:999px;
+  padding:8px 12px;
+  background:var(--green-bg);
+  color:var(--green);
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.top-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.primary-btn,.secondary-btn,.danger-btn,.success-btn{
+  min-height:40px;
+  border:0;
+  border-radius:9px;
+  padding:8px 13px;
+  font-size:11px;
+  font-weight:900;
+}
+.primary-btn{background:var(--navy);color:#fff}
+.secondary-btn{background:#e8eef6;color:#345572}
+.danger-btn{background:var(--red-bg);color:var(--red)}
+.success-btn{background:var(--green-bg);color:var(--green)}
+
+.summary-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:9px;
+  margin-bottom:12px;
+}
+.summary-card{
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  padding:12px;
+  box-shadow:var(--shadow);
+}
+.summary-card small{
+  display:block;
+  color:var(--muted);
+  font-size:8px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+}
+.summary-card strong{
+  display:block;
+  margin-top:6px;
+  color:var(--navy);
+  font-size:20px;
+  font-weight:900;
+}
+.summary-card .sub{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.4;
+}
+
+.tabs{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.tab-btn{
+  border:1px solid #cbd8e7;
+  border-radius:999px;
+  background:#fff;
+  color:#345572;
+  padding:9px 13px;
+  font-size:11px;
+  font-weight:900;
+}
+.tab-btn.active{
+  border-color:var(--navy);
+  background:var(--navy);
+  color:#fff;
+}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+.grid-2{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);
+  gap:12px;
+}
+.grid-equal{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.card{
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.card-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  border-bottom:1px solid var(--line);
+  background:#fbfcfe;
+}
+.card-head strong{
+  color:var(--navy);
+  font-size:14px;
+}
+.card-head span{
+  color:var(--muted);
+  font-size:10px;
+}
+.card-body{padding:14px}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+}
+.form-grid.one{grid-template-columns:1fr}
+.form-grid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.field label{
+  display:block;
+  margin-bottom:5px;
+  color:#536a83;
+  font-size:9px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+.field input,.field select,.field textarea{
+  width:100%;
+  min-height:42px;
+  border:1px solid #cbd8e7;
+  border-radius:9px;
+  background:#fff;
+  padding:8px 10px;
+  color:var(--text);
+  outline:none;
+}
+.field textarea{
+  min-height:82px;
+  resize:vertical;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(47,105,184,.09);
+}
+.field-help{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:9px;
+  line-height:1.4;
+}
+.full{grid-column:1/-1}
+
+.form-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.status-line{
+  min-height:18px;
+  margin-top:10px;
+  color:var(--green);
+  font-size:10px;
+  font-weight:800;
+}
+.status-line.error{color:var(--red)}
+
+.current-box{
+  border:1px solid #ccdaea;
+  border-radius:12px;
+  background:#f6f9fd;
+  padding:12px;
+  margin-bottom:12px;
+}
+.current-box .title{
+  color:var(--navy);
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.current-value{
+  margin-top:5px;
+  color:var(--navy);
+  font-size:25px;
+  font-weight:900;
+}
+.current-note{
+  margin-top:3px;
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.45;
+}
+
+.table-wrap{overflow:auto}
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:760px;
+}
+th,td{
+  padding:10px 9px;
+  border-bottom:1px solid #e6edf5;
+  text-align:left;
+  font-size:10px;
+  vertical-align:top;
+}
+th{
+  background:#f7f9fc;
+  color:#53657a;
+  font-size:9px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.2px;
+  position:sticky;
+  top:0;
+  z-index:1;
+}
+tbody tr:hover{background:#f9fbfe}
+.money{text-align:right;font-variant-numeric:tabular-nums}
+.center{text-align:center}
+.empty{
+  padding:28px !important;
+  text-align:center !important;
+  color:var(--muted);
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  padding:5px 8px;
+  font-size:8px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.badge.green{background:var(--green-bg);color:var(--green)}
+.badge.red{background:var(--red-bg);color:var(--red)}
+.badge.blue{background:#edf5ff;color:#245da8}
+.badge.orange{background:var(--orange-bg);color:var(--orange)}
+.badge.purple{background:var(--purple-bg);color:var(--purple)}
+
+.switch-row{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-height:42px;
+  border:1px solid #cbd8e7;
+  border-radius:9px;
+  padding:8px 10px;
+  background:#fff;
+}
+.switch-row input{width:auto;min-height:auto}
+.switch-row span{font-size:11px;font-weight:800}
+
+.loading-screen{
+  min-height:360px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.loading-screen[hidden]{display:none !important}
+.loading-card{
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+  padding:22px 26px;
+  color:var(--navy);
+  font-size:13px;
+  font-weight:900;
+  box-shadow:var(--shadow);
+}
+.error-card{
+  border:1px solid #f1c2bd;
+  border-radius:12px;
+  background:var(--red-bg);
+  color:var(--red);
+  padding:15px;
+  font-size:11px;
+  font-weight:800;
+  line-height:1.5;
+}
+.error-card[hidden]{display:none !important}
+
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  max-width:min(430px,calc(100vw - 36px));
+  border-radius:11px;
+  padding:12px 14px;
+  background:#173f77;
+  color:#fff;
+  font-size:11px;
+  font-weight:800;
+  line-height:1.45;
+  box-shadow:0 12px 35px rgba(0,0,0,.2);
+  z-index:9999;
+}
+.toast.error{background:#a62f29}
+.toast[hidden]{display:none !important}
+
+.note-card{
+  border:1px solid #d9e4ef;
+  border-radius:12px;
+  padding:12px;
+  background:#f8fafc;
+  color:#5f7287;
+  font-size:10px;
+  line-height:1.55;
+  margin-top:12px;
+}
+.net-preview{
+  border:1px solid #cbe2d3;
+  border-radius:10px;
+  background:var(--green-bg);
+  padding:10px;
+}
+.net-preview small{
+  display:block;
+  color:var(--green);
+  font-size:8px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.net-preview strong{
+  display:block;
+  margin-top:5px;
+  color:#116b3b;
+  font-size:20px;
+}
+
+@media(max-width:1050px){
+  .summary-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.grid-equal{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  body{padding:8px}
+  .hero{display:block}
+  .admin-pill{display:inline-block;margin-top:9px}
+  .summary-grid{grid-template-columns:1fr}
+  .form-grid,.form-grid.three{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <div class="hero">
+    <div>
+      <h1>👥 BIG BROTHER — Staff Payment Settings</h1>
+      <p>Master Data → Staff Payment Settings → Admin Management</p>
+    </div>
+    <div class="admin-pill">🔐 Admin Only</div>
+  </div>
+
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-card">Loading Staff Payment Settings…</div>
+  </div>
+
+  <div id="errorBox" class="error-card" hidden></div>
+
+  <main id="mainContent" hidden>
+
+    <div class="top-actions">
+      <button id="refreshBtn" class="secondary-btn">↻ Refresh</button>
+      <button id="syncBtn" class="success-btn">⚙ Sync Staff Earnings</button>
+    </div>
+
+    <section class="summary-grid">
+      <div class="summary-card">
+        <small>Active Staff</small>
+        <strong id="sumStaff">0</strong>
+        <div class="sub">Available for salary and staff settings.</div>
+      </div>
+      <div class="summary-card">
+        <small>Current Incentive</small>
+        <strong id="sumIncentive">Not Set</strong>
+        <div class="sub" id="sumIncentiveDate">No effective rate yet.</div>
+      </div>
+      <div class="summary-card">
+        <small>Driver Locations</small>
+        <strong id="sumDriverLocations">0</strong>
+        <div class="sub">Locations with Driver 1 / Driver 2 rates.</div>
+      </div>
+      <div class="summary-card">
+        <small>Salary Request Day</small>
+        <strong id="sumSalaryDay">25th</strong>
+        <div class="sub" id="sumSalaryDayDate">Default monthly schedule.</div>
+      </div>
+      <div class="summary-card">
+        <small>Special Allowance Staff</small>
+        <strong id="sumSpecial">0</strong>
+        <div class="sub">Staff currently enabled for Special Allowance.</div>
+      </div>
+    </section>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="incentive">💼 Sales Incentive</button>
+      <button class="tab-btn" data-tab="driver">🚚 Driver Allowance</button>
+      <button class="tab-btn" data-tab="salary">💵 Staff Salary</button>
+      <button class="tab-btn" data-tab="schedule">📅 Salary Schedule</button>
+      <button class="tab-btn" data-tab="special">🎁 Special Allowance</button>
+    </div>
+
+    <!-- SALES INCENTIVE -->
+    <section id="tab-incentive" class="tab-panel active">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <strong>Sales Incentive Rate</strong>
+            <span>Effective-dated</span>
+          </div>
+          <div class="card-body">
+            <div class="current-box">
+              <div class="title">Current Active Rate</div>
+              <div id="currentIncentive" class="current-value">Not Set</div>
+              <div id="currentIncentiveNote" class="current-note">Create the first incentive rate below.</div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>Incentive Rate %</label>
+                <input id="incentiveRate" type="number" min="0" max="100" step="0.01" placeholder="Example: 0.80">
+                <div class="field-help">Enter 0.80 for 0.80%.</div>
+              </div>
+              <div class="field">
+                <label>Effective From</label>
+                <input id="incentiveDate" type="date">
+              </div>
+              <div class="field full">
+                <label>Note</label>
+                <textarea id="incentiveNote" placeholder="Optional note..."></textarea>
+              </div>
+            </div>
+
+            <div id="incentiveStatus" class="status-line"></div>
+
+            <div class="form-actions">
+              <button id="saveIncentiveBtn" class="primary-btn">Save Incentive Rate</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <strong>Incentive Rate History</strong>
+            <span id="incentiveCount">0 records</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Rate</th>
+                  <th>Effective From</th>
+                  <th>Effective To</th>
+                  <th>Status</th>
+                  <th>Note</th>
+                </tr>
+              </thead>
+              <tbody id="incentiveRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DRIVER -->
+    <section id="tab-driver" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <strong>Driver Allowance by Location</strong>
+            <span>Driver 1 and Driver 2 are independent</span>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="field full">
+                <label>Location</label>
+                <select id="driverLocation"></select>
+              </div>
+              <div class="field">
+                <label>Driver 1 Allowance (USD)</label>
+                <input id="driver1Amount" type="number" min="0" step="0.01" placeholder="0.00">
+              </div>
+              <div class="field">
+                <label>Driver 2 Allowance (USD)</label>
+                <input id="driver2Amount" type="number" min="0" step="0.01" placeholder="0.00">
+              </div>
+              <div class="field">
+                <label>Effective From</label>
+                <input id="driverDate" type="date">
+              </div>
+              <div class="field">
+                <label>Current Location Rate</label>
+                <div class="net-preview">
+                  <small>Driver 1 / Driver 2</small>
+                  <strong id="driverCurrentPreview">$0.00 / $0.00</strong>
+                </div>
+              </div>
+              <div class="field full">
+                <label>Note</label>
+                <textarea id="driverNote" placeholder="Optional note..."></textarea>
+              </div>
+            </div>
+
+            <div id="driverStatus" class="status-line"></div>
+
+            <div class="form-actions">
+              <button id="saveDriverBtn" class="primary-btn">Save Driver Rates</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <strong>Driver Allowance History</strong>
+            <span id="driverCount">0 records</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Location</th>
+                  <th>Role</th>
+                  <th class="money">Allowance</th>
+                  <th>Effective From</th>
+                  <th>Effective To</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="driverRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SALARY -->
+    <section id="tab-salary" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <strong>Staff Salary</strong>
+            <span>Effective-dated salary history</span>
+          </div>
+          <div class="card-body">
+
+            <div id="salaryCurrentBox" class="current-box">
+              <div class="title">Selected Staff Current Salary</div>
+              <div id="salaryCurrentValue" class="current-value">Not Set</div>
+              <div id="salaryCurrentNote" class="current-note">Choose a staff member.</div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field full">
+                <label>Staff</label>
+                <select id="salaryStaff"></select>
+              </div>
+
+              <div class="field">
+                <label>Base Salary</label>
+                <input id="salaryBase" type="number" min="0" step="0.01" placeholder="0.00">
+              </div>
+
+              <div class="field">
+                <label>Currency</label>
+                <select id="salaryCurrency">
+                  <option value="USD">USD</option>
+                  <option value="KHR">KHR</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Other Allowance</label>
+                <input id="salaryAllowance" type="number" min="0" step="0.01" value="0">
+              </div>
+
+              <div class="field">
+                <label>Commission</label>
+                <input id="salaryCommission" type="number" min="0" step="0.01" value="0">
+              </div>
+
+              <div class="field">
+                <label>Deduction</label>
+                <input id="salaryDeduction" type="number" min="0" step="0.01" value="0">
+              </div>
+
+              <div class="field">
+                <label>Effective From</label>
+                <input id="salaryDate" type="date">
+              </div>
+
+              <div class="field full">
+                <div class="net-preview">
+                  <small>Net Monthly Salary</small>
+                  <strong id="salaryNet">$0.00</strong>
+                </div>
+              </div>
+
+              <div class="field full">
+                <label>Note</label>
+                <textarea id="salaryNote" placeholder="Optional salary note..."></textarea>
+              </div>
+            </div>
+
+            <div id="salaryStatus" class="status-line"></div>
+
+            <div class="form-actions">
+              <button id="saveSalaryBtn" class="primary-btn">Save Staff Salary</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <strong>Salary History</strong>
+            <span id="salaryCount">0 records</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Staff</th>
+                  <th class="money">Base</th>
+                  <th class="money">Allowance</th>
+                  <th class="money">Commission</th>
+                  <th class="money">Deduction</th>
+                  <th class="money">Net</th>
+                  <th>Effective</th>
+                </tr>
+              </thead>
+              <tbody id="salaryRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCHEDULE -->
+    <section id="tab-schedule" class="tab-panel">
+      <div class="grid-equal">
+
+        <div class="card">
+          <div class="card-head">
+            <strong>Default Monthly Salary Request Day</strong>
+            <span>Example: 25th every month</span>
+          </div>
+          <div class="card-body">
+
+            <div class="current-box">
+              <div class="title">Current Request Day</div>
+              <div id="scheduleCurrent" class="current-value">25th</div>
+              <div id="scheduleCurrentNote" class="current-note">Default monthly schedule.</div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label>Request Day</label>
+                <input id="scheduleDay" type="number" min="1" max="31" step="1" value="25">
+              </div>
+              <div class="field">
+                <label>Effective From</label>
+                <input id="scheduleDate" type="date">
+              </div>
+              <div class="field full">
+                <label>Note</label>
+                <textarea id="scheduleNote" placeholder="Optional note..."></textarea>
+              </div>
+            </div>
+
+            <div id="scheduleStatus" class="status-line"></div>
+
+            <div class="form-actions">
+              <button id="saveScheduleBtn" class="primary-btn">Save Request Day</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <strong>Monthly Override</strong>
+            <span>Use for holiday / early payment month</span>
+          </div>
+          <div class="card-body">
+
+            <div class="form-grid">
+              <div class="field">
+                <label>Salary Month</label>
+                <input id="overrideMonth" type="month">
+              </div>
+              <div class="field">
+                <label>Special Request Date</label>
+                <input id="overrideDate" type="date">
+              </div>
+              <div class="field full">
+                <label>Override Status</label>
+                <div class="switch-row">
+                  <input id="overrideActive" type="checkbox" checked>
+                  <span>Active Override</span>
+                </div>
+              </div>
+              <div class="field full">
+                <label>Note</label>
+                <textarea id="overrideNote" placeholder="Example: Khmer New Year early salary..."></textarea>
+              </div>
+            </div>
+
+            <div id="overrideStatus" class="status-line"></div>
+
+            <div class="form-actions">
+              <button id="saveOverrideBtn" class="primary-btn">Save Monthly Override</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-head">
+          <strong>Salary Schedule History</strong>
+          <span>Default schedule + month-specific overrides</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Effective / Salary Month</th>
+                <th>Request Day / Date</th>
+                <th>Status</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- SPECIAL ALLOWANCE -->
+    <section id="tab-special" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <strong>Special Allowance by Staff</strong>
+            <span>Not all staff receive this benefit</span>
+          </div>
+          <div class="card-body">
+
+            <div class="current-box">
+              <div class="title">Selected Staff Special Allowance</div>
+              <div id="specialCurrentValue" class="current-value">Not Set</div>
+              <div id="specialCurrentNote" class="current-note">Choose a staff member.</div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field full">
+                <label>Staff</label>
+                <select id="specialStaff"></select>
+              </div>
+
+              <div class="field full">
+                <label>Eligibility</label>
+                <div class="switch-row">
+                  <input id="specialEnabled" type="checkbox">
+                  <span>Enable Special Allowance for this staff</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Monthly Allowance (USD)</label>
+                <input id="specialAmount" type="number" min="0" step="0.01" value="20">
+              </div>
+
+              <div class="field">
+                <label>Deduct per Approved Leave Day</label>
+                <input id="specialDeduction" type="number" min="0" step="0.01" value="10">
+              </div>
+
+              <div class="field">
+                <label>Effective From</label>
+                <input id="specialDate" type="date">
+              </div>
+
+              <div class="field">
+                <label>Calculation Example</label>
+                <div class="net-preview">
+                  <small>1 Approved Leave Day</small>
+                  <strong id="specialExample">$10.00</strong>
+                </div>
+              </div>
+
+              <div class="field full">
+                <label>Note</label>
+                <textarea id="specialNote" placeholder="Optional note..."></textarea>
+              </div>
+            </div>
+
+            <div id="specialStatus" class="status-line"></div>
+
+            <div class="form-actions">
+              <button id="saveSpecialBtn" class="primary-btn">Save Special Allowance</button>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <strong>Special Allowance History</strong>
+            <span id="specialCount">0 records</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Staff</th>
+                  <th>Status</th>
+                  <th class="money">Monthly</th>
+                  <th class="money">Leave Deduction</th>
+                  <th>Effective From</th>
+                  <th>Effective To</th>
+                </tr>
+              </thead>
+              <tbody id="specialRows"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="note-card">
+      Staff Payment Settings are effective-dated Master Data. Existing REQUESTED or PAID staff earnings are frozen and are not rewritten when rates change. Driver 1 and Driver 2 allowances are separate. A staff member can receive Sales Incentive and Driver Allowance at the same time when they perform both roles.
+    </div>
+
+  </main>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const SUPABASE_URL = "https://sjfhlaclgmkwwofzstok.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_w762jR65CWwlO30fKQsYOw_6L9grx8S";
+  const SESSION_KEY = "BB_SUPABASE_DEV_SESSION_V1";
+
+  let session = null;
+  let data = null;
+  let toastTimer = null;
+
+  const $ = id => document.getElementById(id);
+  const clean = v => String(v == null ? "" : v).trim();
+  const num = v => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : 0;
+  };
+  const esc = v => clean(v)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+  const params = new URLSearchParams(location.search);
+  if(params.get("embed")==="1" || params.get("shellModule")){
+    document.body.classList.add("embed");
+  }
+
+  function isoToday(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function firstOfMonth(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-01`;
+  }
+
+  function monthValue(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+  }
+
+  function readSession(){
+    try{
+      return JSON.parse(localStorage.getItem(SESSION_KEY)||"null");
+    }catch(_){
+      return null;
+    }
+  }
+
+  function saveSession(value){
+    session = value || null;
+    try{
+      if(!value){
+        localStorage.removeItem(SESSION_KEY);
+        return;
+      }
+      if(!value.expires_at && value.expires_in){
+        value.expires_at = Math.floor(Date.now()/1000)+Number(value.expires_in);
+      }
+      localStorage.setItem(SESSION_KEY,JSON.stringify(value));
+    }catch(_){}
+  }
+
+  async function parseResponse(response){
+    const text = await response.text();
+    let body = {};
+    try{ body = text ? JSON.parse(text) : {}; }
+    catch(_){ body = {message:text}; }
+
+    if(!response.ok){
+      throw new Error(
+        body.message ||
+        body.error_description ||
+        body.error ||
+        `Supabase request failed (${response.status})`
+      );
+    }
+    return body;
+  }
+
+  async function refreshSession(){
+    const current = readSession();
+    if(!current?.refresh_token){
+      throw new Error("Please sign in to BIG BROTHER Dashboard first.");
+    }
+
+    const response = await fetch(
+      SUPABASE_URL+"/auth/v1/token?grant_type=refresh_token",
+      {
+        method:"POST",
+        headers:{
+          apikey:SUPABASE_KEY,
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({refresh_token:current.refresh_token}),
+        cache:"no-store"
+      }
+    );
+
+    const next = await parseResponse(response);
+    saveSession(next);
+    return next;
+  }
+
+  async function ensureSession(){
+    session = readSession();
+    if(!session?.access_token){
+      throw new Error("Please sign in to BIG BROTHER Dashboard first.");
+    }
+
+    const now = Math.floor(Date.now()/1000);
+    if(session.expires_at && Number(session.expires_at) < now+45){
+      await refreshSession();
+    }
+    return session;
+  }
+
+  async function rpc(functionName,args={}){
+    await ensureSession();
+
+    async function call(){
+      return fetch(
+        SUPABASE_URL+"/rest/v1/rpc/"+functionName,
+        {
+          method:"POST",
+          headers:{
+            apikey:SUPABASE_KEY,
+            Authorization:"Bearer "+session.access_token,
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify(args||{}),
+          cache:"no-store"
+        }
+      );
+    }
+
+    let response = await call();
+    if(response.status===401){
+      await refreshSession();
+      response = await call();
+    }
+
+    return parseResponse(response);
+  }
+
+  function usd(v){
+    return "$"+num(v).toLocaleString("en-US",{
+      minimumFractionDigits:2,
+      maximumFractionDigits:2
+    });
+  }
+
+  function money(v,currency){
+    const c = clean(currency||"USD").toUpperCase();
+    if(c==="KHR"){
+      return "៛"+num(v).toLocaleString("en-US",{maximumFractionDigits:0});
+    }
+    return usd(v);
+  }
+
+  function pct(v){
+    return num(v).toLocaleString("en-US",{
+      minimumFractionDigits:2,
+      maximumFractionDigits:4
+    })+"%";
+  }
+
+  function formatDate(value){
+    const raw = clean(value);
+    if(!raw) return "-";
+    const m = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(!m) return raw;
+    const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return `${m[3]}-${months[Number(m[2])-1]}-${m[1]}`;
+  }
+
+  function ordinal(n){
+    n = Number(n)||0;
+    const mod100 = n%100;
+    if(mod100>=11 && mod100<=13) return n+"th";
+    if(n%10===1) return n+"st";
+    if(n%10===2) return n+"nd";
+    if(n%10===3) return n+"rd";
+    return n+"th";
+  }
+
+  function badge(active){
+    return active
+      ? '<span class="badge green">ACTIVE</span>'
+      : '<span class="badge red">INACTIVE</span>';
+  }
+
+  function showToast(message,error=false){
+    const el = $("toast");
+    el.textContent = clean(message);
+    el.classList.toggle("error",!!error);
+    el.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>{el.hidden=true},3600);
+  }
+
+  function setStatus(id,message,error=false){
+    const el=$(id);
+    el.textContent=clean(message);
+    el.classList.toggle("error",!!error);
+  }
+
+  function showFatal(message){
+    $("loadingScreen").hidden=true;
+    $("mainContent").hidden=true;
+    $("errorBox").textContent=clean(message);
+    $("errorBox").hidden=false;
+  }
+
+  function setBusy(button,busy,busyText){
+    if(!button) return;
+    if(busy){
+      button.dataset.originalText=button.textContent;
+      button.textContent=busyText||"Saving...";
+      button.disabled=true;
+    }else{
+      button.textContent=button.dataset.originalText||button.textContent;
+      button.disabled=false;
+    }
+  }
+
+  function currentByDate(rows){
+    const today=isoToday();
+    return (rows||[])
+      .filter(r=>{
+        const from=clean(r.effectiveFrom);
+        const to=clean(r.effectiveTo);
+        return from && from<=today && (!to || to>=today) && r.active!==false;
+      })
+      .sort((a,b)=>clean(b.effectiveFrom).localeCompare(clean(a.effectiveFrom)))[0] || null;
+  }
+
+  function currentSalaryForStaff(staffId){
+    const staff=(data?.staff||[]).find(x=>x.staffId===staffId);
+    return staff?.currentSalary || null;
+  }
+
+  function currentSpecialForStaff(staffId){
+    const today=isoToday();
+    return (data?.specialAllowanceSettings||[])
+      .filter(r=>r.staffId===staffId && clean(r.effectiveFrom)<=today && (!r.effectiveTo || clean(r.effectiveTo)>=today))
+      .sort((a,b)=>clean(b.effectiveFrom).localeCompare(clean(a.effectiveFrom)))[0] || null;
+  }
+
+  function currentDriverRole(locationCode,role){
+    const today=isoToday();
+    return (data?.driverAllowanceRates||[])
+      .filter(r=>
+        r.locationCode===locationCode &&
+        r.driverRole===role &&
+        clean(r.effectiveFrom)<=today &&
+        (!r.effectiveTo || clean(r.effectiveTo)>=today) &&
+        r.active!==false
+      )
+      .sort((a,b)=>clean(b.effectiveFrom).localeCompare(clean(a.effectiveFrom)))[0] || null;
+  }
+
+  function renderSelects(){
+    const staffOptions=(data.staff||[])
+      .map(s=>`<option value="${esc(s.staffId)}">${esc(s.staffName)} — ${esc(s.staffId)}</option>`)
+      .join("");
+
+    $("salaryStaff").innerHTML = '<option value="">Select Staff...</option>'+staffOptions;
+    $("specialStaff").innerHTML = '<option value="">Select Staff...</option>'+staffOptions;
+
+    const locationOptions=(data.locations||[])
+      .map(l=>`<option value="${esc(l.locationCode)}">${esc(l.locationCode)} — ${esc(l.locationName)}</option>`)
+      .join("");
+
+    $("driverLocation").innerHTML = '<option value="">Select Location...</option>'+locationOptions;
+  }
+
+  function renderSummary(){
+    $("sumStaff").textContent=(data.staff||[]).length.toLocaleString("en-US");
+
+    const inc=currentByDate(data.salesIncentiveRates||[]);
+    if(inc){
+      $("sumIncentive").textContent=pct(inc.ratePercent);
+      $("sumIncentiveDate").textContent="Effective "+formatDate(inc.effectiveFrom);
+      $("currentIncentive").textContent=pct(inc.ratePercent);
+      $("currentIncentiveNote").textContent=
+        `Effective ${formatDate(inc.effectiveFrom)}${inc.effectiveTo ? " to "+formatDate(inc.effectiveTo) : " onward"}.`;
+    }else{
+      $("sumIncentive").textContent="Not Set";
+      $("sumIncentiveDate").textContent="No effective rate yet.";
+      $("currentIncentive").textContent="Not Set";
+      $("currentIncentiveNote").textContent="Create the first incentive rate below.";
+    }
+
+    const locs=new Set((data.driverAllowanceRates||[])
+      .filter(r=>r.active!==false)
+      .map(r=>r.locationCode));
+    $("sumDriverLocations").textContent=locs.size.toLocaleString("en-US");
+
+    const schedule=currentByDate(data.salaryRequestSettings||[]);
+    if(schedule){
+      $("sumSalaryDay").textContent=ordinal(schedule.requestDay);
+      $("sumSalaryDayDate").textContent="Effective "+formatDate(schedule.effectiveFrom);
+      $("scheduleCurrent").textContent=ordinal(schedule.requestDay);
+      $("scheduleCurrentNote").textContent="Effective "+formatDate(schedule.effectiveFrom);
+      $("scheduleDay").value=schedule.requestDay;
+    }else{
+      $("sumSalaryDay").textContent="25th";
+      $("sumSalaryDayDate").textContent="Default fallback.";
+      $("scheduleCurrent").textContent="25th";
+      $("scheduleCurrentNote").textContent="Default fallback.";
+    }
+
+    const enabledStaff=new Set((data.specialAllowanceSettings||[])
+      .filter(r=>r.enabled===true && currentSpecialForStaff(r.staffId)?.specialAllowanceSettingId===r.specialAllowanceSettingId)
+      .map(r=>r.staffId));
+    $("sumSpecial").textContent=enabledStaff.size.toLocaleString("en-US");
+  }
+
+  function renderIncentive(){
+    const rows=data.salesIncentiveRates||[];
+    $("incentiveCount").textContent=`${rows.length} record${rows.length===1?"":"s"}`;
+    $("incentiveRows").innerHTML=rows.length ? rows.map(r=>`
+      <tr>
+        <td><strong>${esc(pct(r.ratePercent))}</strong></td>
+        <td>${esc(formatDate(r.effectiveFrom))}</td>
+        <td>${esc(formatDate(r.effectiveTo))}</td>
+        <td>${badge(r.active!==false)}</td>
+        <td>${esc(r.note||"-")}</td>
+      </tr>
+    `).join("") : '<tr><td colspan="5" class="empty">No incentive rate yet.</td></tr>';
+  }
+
+  function renderDriver(){
+    const rows=data.driverAllowanceRates||[];
+    $("driverCount").textContent=`${rows.length} record${rows.length===1?"":"s"}`;
+    $("driverRows").innerHTML=rows.length ? rows.map(r=>`
+      <tr>
+        <td><strong>${esc(r.locationCode)}</strong></td>
+        <td><span class="badge ${r.driverRole==="DRIVER_1"?"blue":"purple"}">${esc(r.driverRole.replace("_"," "))}</span></td>
+        <td class="money"><strong>${esc(money(r.allowanceAmount,r.currency))}</strong></td>
+        <td>${esc(formatDate(r.effectiveFrom))}</td>
+        <td>${esc(formatDate(r.effectiveTo))}</td>
+        <td>${badge(r.active!==false)}</td>
+      </tr>
+    `).join("") : '<tr><td colspan="6" class="empty">No driver allowance rate yet.</td></tr>';
+    updateDriverPreview();
+  }
+
+  function renderSalary(){
+    const staffId=$("salaryStaff").value;
+    const rows=(data.salaryHistory||[])
+      .filter(r=>!staffId || r.staffId===staffId);
+
+    $("salaryCount").textContent=`${rows.length} record${rows.length===1?"":"s"}`;
+    $("salaryRows").innerHTML=rows.length ? rows.map(r=>`
+      <tr>
+        <td><strong>${esc(r.staffName||r.staffId)}</strong><br><span style="color:#6f8195">${esc(r.staffId)}</span></td>
+        <td class="money">${esc(money(r.baseSalary,r.currency))}</td>
+        <td class="money">${esc(money(r.allowance,r.currency))}</td>
+        <td class="money">${esc(money(r.commission,r.currency))}</td>
+        <td class="money">${esc(money(r.deduction,r.currency))}</td>
+        <td class="money"><strong>${esc(money(r.netSalary,r.currency))}</strong></td>
+        <td>${esc(formatDate(r.effectiveFrom))}<br><span style="color:#6f8195">to ${esc(formatDate(r.effectiveTo))}</span></td>
+      </tr>
+    `).join("") : '<tr><td colspan="7" class="empty">No salary history for this selection.</td></tr>';
+
+    updateSalaryCurrent();
+    updateSalaryNet();
+  }
+
+  function renderSchedule(){
+    const combined=[];
+
+    (data.salaryRequestSettings||[]).forEach(r=>{
+      combined.push({
+        kind:"DEFAULT",
+        date:r.effectiveFrom,
+        request:ordinal(r.requestDay),
+        active:r.active!==false,
+        note:r.note||""
+      });
+    });
+
+    (data.salaryRequestOverrides||[]).forEach(r=>{
+      combined.push({
+        kind:"OVERRIDE",
+        date:r.salaryMonth,
+        request:formatDate(r.requestDate),
+        active:r.active!==false,
+        note:r.note||""
+      });
+    });
+
+    combined.sort((a,b)=>clean(b.date).localeCompare(clean(a.date)));
+
+    $("scheduleRows").innerHTML=combined.length ? combined.map(r=>`
+      <tr>
+        <td><span class="badge ${r.kind==="DEFAULT"?"blue":"orange"}">${esc(r.kind)}</span></td>
+        <td>${esc(r.kind==="DEFAULT" ? formatDate(r.date) : clean(r.date).slice(0,7))}</td>
+        <td><strong>${esc(r.request)}</strong></td>
+        <td>${badge(r.active)}</td>
+        <td>${esc(r.note||"-")}</td>
+      </tr>
+    `).join("") : '<tr><td colspan="5" class="empty">No salary schedule history.</td></tr>';
+  }
+
+  function renderSpecial(){
+    const staffId=$("specialStaff").value;
+    const rows=(data.specialAllowanceSettings||[])
+      .filter(r=>!staffId || r.staffId===staffId);
+
+    $("specialCount").textContent=`${rows.length} record${rows.length===1?"":"s"}`;
+    $("specialRows").innerHTML=rows.length ? rows.map(r=>`
+      <tr>
+        <td><strong>${esc(r.staffName||r.staffId)}</strong><br><span style="color:#6f8195">${esc(r.staffId)}</span></td>
+        <td>${r.enabled ? '<span class="badge green">ENABLED</span>' : '<span class="badge red">DISABLED</span>'}</td>
+        <td class="money">${esc(money(r.monthlyAllowance,r.currency))}</td>
+        <td class="money">${esc(money(r.leaveDeductionPerDay,r.currency))} / day</td>
+        <td>${esc(formatDate(r.effectiveFrom))}</td>
+        <td>${esc(formatDate(r.effectiveTo))}</td>
+      </tr>
+    `).join("") : '<tr><td colspan="6" class="empty">No Special Allowance history for this selection.</td></tr>';
+
+    updateSpecialCurrent();
+    updateSpecialExample();
+  }
+
+  function renderAll(){
+    renderSelects();
+    renderSummary();
+    renderIncentive();
+    renderDriver();
+    renderSalary();
+    renderSchedule();
+    renderSpecial();
+  }
+
+  async function loadMaster(showLoading=true){
+    if(showLoading){
+      $("loadingScreen").hidden=false;
+      $("mainContent").hidden=true;
+    }
+    $("errorBox").hidden=true;
+
+    try{
+      const result=await rpc("bb_staff_relation_admin_master_data",{});
+      if(!result || result.success!==true){
+        throw new Error("Could not load Staff Payment Settings.");
+      }
+      data=result;
+      renderAll();
+      $("loadingScreen").hidden=true;
+      $("mainContent").hidden=false;
+    }catch(error){
+      console.error(error);
+      showFatal(error?.message||error);
+    }
+  }
+
+  function updateDriverPreview(){
+    const loc=$("driverLocation").value;
+    if(!loc){
+      $("driverCurrentPreview").textContent="$0.00 / $0.00";
+      return;
+    }
+    const d1=currentDriverRole(loc,"DRIVER_1");
+    const d2=currentDriverRole(loc,"DRIVER_2");
+    $("driverCurrentPreview").textContent=
+      `${usd(d1?.allowanceAmount||0)} / ${usd(d2?.allowanceAmount||0)}`;
+
+    if(d1) $("driver1Amount").value=num(d1.allowanceAmount).toFixed(2);
+    if(d2) $("driver2Amount").value=num(d2.allowanceAmount).toFixed(2);
+  }
+
+  function updateSalaryCurrent(){
+    const staffId=$("salaryStaff").value;
+    if(!staffId){
+      $("salaryCurrentValue").textContent="Not Set";
+      $("salaryCurrentNote").textContent="Choose a staff member.";
+      return;
+    }
+
+    const s=currentSalaryForStaff(staffId);
+    if(!s){
+      $("salaryCurrentValue").textContent="Not Set";
+      $("salaryCurrentNote").textContent="This staff has no current salary record.";
+      return;
+    }
+
+    $("salaryCurrentValue").textContent=money(s.netSalary,s.currency);
+    $("salaryCurrentNote").textContent=
+      `Base ${money(s.baseSalary,s.currency)} • Effective ${formatDate(s.effectiveFrom)}${s.effectiveTo ? " to "+formatDate(s.effectiveTo) : " onward"}.`;
+
+    $("salaryBase").value=num(s.baseSalary).toFixed(2);
+    $("salaryAllowance").value=num(s.allowance).toFixed(2);
+    $("salaryCommission").value=num(s.commission).toFixed(2);
+    $("salaryDeduction").value=num(s.deduction).toFixed(2);
+    $("salaryCurrency").value=clean(s.currency||"USD").toUpperCase();
+  }
+
+  function updateSalaryNet(){
+    const net=Math.max(
+      0,
+      num($("salaryBase").value)+
+      num($("salaryAllowance").value)+
+      num($("salaryCommission").value)-
+      num($("salaryDeduction").value)
+    );
+    $("salaryNet").textContent=money(net,$("salaryCurrency").value);
+  }
+
+  function updateSpecialCurrent(){
+    const staffId=$("specialStaff").value;
+    if(!staffId){
+      $("specialCurrentValue").textContent="Not Set";
+      $("specialCurrentNote").textContent="Choose a staff member.";
+      return;
+    }
+
+    const s=currentSpecialForStaff(staffId);
+    if(!s){
+      $("specialCurrentValue").textContent="Not Set";
+      $("specialCurrentNote").textContent="No current Special Allowance setting.";
+      return;
+    }
+
+    $("specialCurrentValue").textContent=s.enabled
+      ? money(s.monthlyAllowance,s.currency)
+      : "Disabled";
+
+    $("specialCurrentNote").textContent=s.enabled
+      ? `${money(s.leaveDeductionPerDay,s.currency)} deducted per approved leave day. Effective ${formatDate(s.effectiveFrom)}.`
+      : `Special Allowance disabled from ${formatDate(s.effectiveFrom)}.`;
+
+    $("specialEnabled").checked=!!s.enabled;
+    $("specialAmount").value=num(s.monthlyAllowance).toFixed(2);
+    $("specialDeduction").value=num(s.leaveDeductionPerDay).toFixed(2);
+  }
+
+  function updateSpecialExample(){
+    const remaining=Math.max(0,num($("specialAmount").value)-num($("specialDeduction").value));
+    $("specialExample").textContent=usd(remaining);
+  }
+
+  async function saveIncentive(){
+    const btn=$("saveIncentiveBtn");
+    setStatus("incentiveStatus","");
+    const rate=num($("incentiveRate").value);
+    const effective=$("incentiveDate").value;
+
+    if(!$("incentiveRate").value || !effective){
+      setStatus("incentiveStatus","Rate and Effective From are required.",true);
+      return;
+    }
+
+    setBusy(btn,true,"Saving...");
+    try{
+      await rpc("bb_staff_relation_admin_save_incentive_rate",{
+        p_rate_percent:rate,
+        p_effective_from:effective,
+        p_note:clean($("incentiveNote").value)||null
+      });
+      setStatus("incentiveStatus","Sales Incentive Rate saved.");
+      showToast("Sales Incentive Rate saved ✅");
+      await loadMaster(false);
+    }catch(error){
+      setStatus("incentiveStatus",error?.message||error,true);
+    }finally{
+      setBusy(btn,false);
+    }
+  }
+
+  async function saveDriver(){
+    const btn=$("saveDriverBtn");
+    setStatus("driverStatus","");
+    const location=$("driverLocation").value;
+    const effective=$("driverDate").value;
+
+    if(!location || !effective){
+      setStatus("driverStatus","Location and Effective From are required.",true);
+      return;
+    }
+
+    setBusy(btn,true,"Saving...");
+    try{
+      await rpc("bb_staff_relation_admin_save_driver_rates",{
+        p_location_code:location,
+        p_driver1_amount:num($("driver1Amount").value),
+        p_driver2_amount:num($("driver2Amount").value),
+        p_effective_from:effective,
+        p_note:clean($("driverNote").value)||null
+      });
+      setStatus("driverStatus","Driver 1 and Driver 2 rates saved.");
+      showToast("Driver Allowance rates saved ✅");
+      await loadMaster(false);
+      $("driverLocation").value=location;
+      updateDriverPreview();
+    }catch(error){
+      setStatus("driverStatus",error?.message||error,true);
+    }finally{
+      setBusy(btn,false);
+    }
+  }
+
+  async function saveSalary(){
+    const btn=$("saveSalaryBtn");
+    setStatus("salaryStatus","");
+    const staffId=$("salaryStaff").value;
+    const effective=$("salaryDate").value;
+
+    if(!staffId || !$("salaryBase").value || !effective){
+      setStatus("salaryStatus","Staff, Base Salary and Effective From are required.",true);
+      return;
+    }
+
+    setBusy(btn,true,"Saving...");
+    try{
+      await rpc("bb_staff_relation_admin_save_salary",{
+        p_staff_id:staffId,
+        p_base_salary:num($("salaryBase").value),
+        p_effective_from:effective,
+        p_allowance:num($("salaryAllowance").value),
+        p_commission:num($("salaryCommission").value),
+        p_deduction:num($("salaryDeduction").value),
+        p_currency:$("salaryCurrency").value,
+        p_note:clean($("salaryNote").value)||null
+      });
+      setStatus("salaryStatus","Staff Salary saved.");
+      showToast("Staff Salary saved ✅");
+      await loadMaster(false);
+      $("salaryStaff").value=staffId;
+      renderSalary();
+    }catch(error){
+      setStatus("salaryStatus",error?.message||error,true);
+    }finally{
+      setBusy(btn,false);
+    }
+  }
+
+  async function saveSchedule(){
+    const btn=$("saveScheduleBtn");
+    setStatus("scheduleStatus","");
+    const day=Number($("scheduleDay").value);
+    const effective=$("scheduleDate").value;
+
+    if(!effective || !Number.isInteger(day) || day<1 || day>31){
+      setStatus("scheduleStatus","Request Day 1-31 and Effective From are required.",true);
+      return;
+    }
+
+    setBusy(btn,true,"Saving...");
+    try{
+      await rpc("bb_staff_relation_admin_save_salary_request_day",{
+        p_request_day:day,
+        p_effective_from:effective,
+        p_note:clean($("scheduleNote").value)||null
+      });
+      setStatus("scheduleStatus","Salary Request Day saved.");
+      showToast("Salary Request Day saved ✅");
+      await loadMaster(false);
+    }catch(error){
+      setStatus("scheduleStatus",error?.message||error,true);
+    }finally{
+      setBusy(btn,false);
+    }
+  }
+
+  async function saveOverride(){
+    const btn=$("saveOverrideBtn");
+    setStatus("overrideStatus","");
+    const month=$("overrideMonth").value;
+    const requestDate=$("overrideDate").value;
+
+    if(!month || !requestDate){
+      setStatus("overrideStatus","Salary Month and Request Date are required.",true);
+      return;
+    }
+
+    setBusy(btn,true,"Saving...");
+    try{
+      await rpc("bb_staff_relation_admin_save_salary_override",{
+        p_salary_month:month+"-01",
+        p_request_date:requestDate,
+        p_active:$("overrideActive").checked,
+        p_note:clean($("overrideNote").value)||null
+      });
+      setStatus("overrideStatus","Monthly Salary Override saved.");
+      showToast("Monthly Salary Override saved ✅");
+      await loadMaster(false);
+    }catch(error){
+      setStatus("overrideStatus",error?.message||error,true);
+    }finally{
+      setBusy(btn,false);
+    }
+  }
+
+  async function saveSpecial(){
+    const btn=$("saveSpecialBtn");
+    setStatus("specialStatus","");
+    const staffId=$("specialStaff").value;
+    const effective=$("specialDate").value;
+
+    if(!staffId || !effective){
+      setStatus("specialStatus","Staff and Effective From are required.",true);
+      return;
+    }
+
+    setBusy(btn,true,"Saving...");
+    try{
+      await rpc("bb_staff_relation_admin_save_special_allowance",{
+        p_staff_id:staffId,
+        p_enabled:$("specialEnabled").checked,
+        p_monthly_allowance:num($("specialAmount").value),
+        p_leave_deduction_per_day:num($("specialDeduction").value),
+        p_effective_from:effective,
+        p_note:clean($("specialNote").value)||null
+      });
+      setStatus("specialStatus","Special Allowance setting saved.");
+      showToast("Special Allowance setting saved ✅");
+      await loadMaster(false);
+      $("specialStaff").value=staffId;
+      renderSpecial();
+    }catch(error){
+      setStatus("specialStatus",error?.message||error,true);
+    }finally{
+      setBusy(btn,false);
+    }
+  }
+
+  async function syncAll(){
+    const btn=$("syncBtn");
+    setBusy(btn,true,"Syncing...");
+    try{
+      const today=isoToday();
+      const from=new Date();
+      from.setFullYear(from.getFullYear()-1);
+      const y=from.getFullYear();
+      const m=String(from.getMonth()+1).padStart(2,"0");
+      const d=String(from.getDate()).padStart(2,"0");
+
+      const result=await rpc("bb_staff_relation_admin_sync_all",{
+        p_from:`${y}-${m}-${d}`,
+        p_to:today,
+        p_salary_month:firstOfMonth()
+      });
+
+      showToast(`Staff earnings sync complete ✅ — ${Number(result.staffSynced||0)} staff`);
+    }catch(error){
+      showToast(error?.message||error,true);
+    }finally{
+      setBusy(btn,false);
+    }
+  }
+
+  function bindEvents(){
+    document.querySelectorAll(".tab-btn").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        document.querySelectorAll(".tab-btn").forEach(x=>x.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach(x=>x.classList.remove("active"));
+        btn.classList.add("active");
+        $("tab-"+btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    $("refreshBtn").addEventListener("click",()=>loadMaster(true));
+    $("syncBtn").addEventListener("click",syncAll);
+
+    $("saveIncentiveBtn").addEventListener("click",saveIncentive);
+    $("saveDriverBtn").addEventListener("click",saveDriver);
+    $("saveSalaryBtn").addEventListener("click",saveSalary);
+    $("saveScheduleBtn").addEventListener("click",saveSchedule);
+    $("saveOverrideBtn").addEventListener("click",saveOverride);
+    $("saveSpecialBtn").addEventListener("click",saveSpecial);
+
+    $("driverLocation").addEventListener("change",updateDriverPreview);
+
+    $("salaryStaff").addEventListener("change",renderSalary);
+    ["salaryBase","salaryAllowance","salaryCommission","salaryDeduction"].forEach(id=>{
+      $(id).addEventListener("input",updateSalaryNet);
+    });
+    $("salaryCurrency").addEventListener("change",updateSalaryNet);
+
+    $("specialStaff").addEventListener("change",renderSpecial);
+    $("specialAmount").addEventListener("input",updateSpecialExample);
+    $("specialDeduction").addEventListener("input",updateSpecialExample);
+  }
+
+  function setDefaults(){
+    $("incentiveDate").value=isoToday();
+    $("driverDate").value=isoToday();
+    $("salaryDate").value=firstOfMonth();
+    $("scheduleDate").value=firstOfMonth();
+    $("overrideMonth").value=monthValue();
+    $("specialDate").value=firstOfMonth();
+  }
+
+  bindEvents();
+  setDefaults();
+  loadMaster(true);
+
+})();
+</script>
+</body>
+</html>

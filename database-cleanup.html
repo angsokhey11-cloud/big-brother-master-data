@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BIG BROTHER — Database Cleanup</title>
+<style>
+:root{--navy:#173f77;--bg:#eef3f8;--card:#fff;--line:#d7e2ee;--text:#172b43;--muted:#6f8195;--green:#18864b;--greenbg:#eaf8f0;--red:#b42318;--redbg:#fff0ef;--amber:#9a6700;--amberbg:#fff8e7;--shadow:0 8px 26px rgba(20,55,90,.07)}*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}body{padding:18px}body.embed{padding:10px}button,input{font:inherit}.app{max-width:1450px;margin:0 auto}.hero{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;margin-bottom:14px}.hero h1{margin:0;color:var(--navy);font-size:25px}.hero p{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.pill{padding:8px 12px;border-radius:999px;background:var(--redbg);border:1px solid #f0c7c1;color:var(--red);font-size:10px;font-weight:900;white-space:nowrap}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:12px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}.head{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center;background:#fbfcfe}.head strong{color:var(--navy);font-size:14px}.head span{color:var(--muted);font-size:10px}.body{padding:14px}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}.stat{border:1px solid var(--line);border-radius:11px;padding:12px;background:#fff}.stat small{display:block;color:var(--muted);font-size:8px;font-weight:900;text-transform:uppercase}.stat strong{display:block;margin-top:6px;color:var(--navy);font-size:23px}.warn{padding:12px 13px;border-radius:11px;background:var(--amberbg);border:1px solid #eedba7;color:#765000;font-size:11px;line-height:1.5;margin-bottom:12px}.safe{padding:12px 13px;border-radius:11px;background:var(--greenbg);border:1px solid #cde8d7;color:#17653c;font-size:10px;line-height:1.55}.safe strong{display:block;margin-bottom:4px}.safe ul{margin:5px 0 0 18px;padding:0;columns:2}.tablewrap{max-height:510px;overflow:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;border-collapse:collapse}th,td{padding:9px 10px;border-bottom:1px solid #e7edf5;text-align:left;font-size:10px}th{position:sticky;top:0;background:#f7f9fc;color:#53657a;font-size:9px;text-transform:uppercase;z-index:1}td:last-child,th:last-child{text-align:right}.count{font-weight:900;color:var(--navy)}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:11px}.btn{border:0;border-radius:9px;min-height:39px;padding:8px 13px;font-size:10px;font-weight:900;cursor:pointer}.secondary{background:#e8eef6;color:#345572}.danger{background:var(--red);color:#fff}.danger:disabled{opacity:.42;cursor:not-allowed}.confirmbox{margin-top:12px;border:1px solid #f0c7c1;background:#fffafa;border-radius:12px;padding:13px}.confirmbox label{display:block;color:#7a2d25;font-size:10px;font-weight:900;margin-bottom:6px}.confirmbox input{width:100%;min-height:42px;border:1px solid #d8b1ab;border-radius:9px;padding:9px 11px;color:var(--text);background:#fff}.confirmbox code{font-weight:900;color:var(--red)}.confirmbox p{margin:7px 0 10px;color:#8c5c56;font-size:9px;line-height:1.45}.status{margin-top:10px;min-height:18px;font-size:10px;font-weight:800}.status.ok{color:var(--green)}.status.bad{color:var(--red)}.loading{min-height:420px;display:flex;align-items:center;justify-content:center}.loading[hidden]{display:none!important}.loadbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 26px;color:var(--navy);font-size:13px;font-weight:900;box-shadow:var(--shadow)}.error{padding:14px;border-radius:12px;background:var(--redbg);border:1px solid #f1c2bd;color:var(--red);font-size:11px;font-weight:800}.error[hidden]{display:none!important}@media(max-width:900px){.grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.safe ul{columns:1}}@media(max-width:560px){body{padding:9px}.hero{display:block}.pill{display:inline-block;margin-top:9px}.summary{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hero"><div><h1>🧹 BIG BROTHER — Database Cleanup</h1><p>Master Data → Database Cleanup · PC maintenance tool for clearing test operational records before real go-live.</p></div><div class="pill">⚠ ADMIN + EXPLICIT APPROVAL ONLY</div></div>
+  <div id="loading" class="loading"><div class="loadbox">Checking cleanup permission and scanning Supabase…</div></div>
+  <div id="errorBox" class="error" hidden></div>
+  <main id="main" hidden>
+    <div class="actions"><button id="refreshBtn" class="btn secondary">↻ Refresh Preview</button></div>
+    <section class="summary">
+      <div class="stat"><small>Rows Marked for Cleanup</small><strong id="totalRows">0</strong></div>
+      <div class="stat"><small>Operational Tables</small><strong id="tableCount">0</strong></div>
+      <div class="stat"><small>Master Data</small><strong style="color:var(--green)">Preserved</strong></div>
+    </section>
+    <div class="grid">
+      <section class="card">
+        <div class="head"><strong>Operational/Test Data Preview</strong><span>Exact live row counts from Supabase</span></div>
+        <div class="body">
+          <div class="warn"><strong>This reset is permanent.</strong> It removes operational test transactions such as invoices, receivable payments, purchases, expenses, stock movements/batches, deposits, delivery activity and staff transaction requests. It does not delete your master setup.</div>
+          <div class="tablewrap"><table><thead><tr><th>Table</th><th>Rows</th></tr></thead><tbody id="tableBody"></tbody></table></div>
+        </div>
+      </section>
+      <aside class="card">
+        <div class="head"><strong>Safety Controls</strong><span>No automatic cleanup</span></div>
+        <div class="body">
+          <div class="safe"><strong>✅ Preserved by this tool</strong><ul id="preservedList"></ul></div>
+          <div class="confirmbox">
+            <label>Type <code>RESET TEST DATA</code> exactly</label>
+            <input id="confirmText" autocomplete="off" spellcheck="false" placeholder="RESET TEST DATA">
+            <p>The button stays locked until the exact confirmation phrase is entered. A second browser confirmation is required before Supabase runs the reset.</p>
+            <button id="cleanupBtn" class="btn danger" disabled>🧹 Clear Operational Test Data</button>
+            <div id="status" class="status"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+<script>
+(function(){
+'use strict';
+const SB='https://sjfhlaclgmkwwofzstok.supabase.co';
+const KEY='sb_publishable_w762jR65CWwlO30fKQsYOw_6L9grx8S';
+const SESSION_KEY='BB_SUPABASE_DEV_SESSION_V1';
+const PHRASE='RESET TEST DATA';
+let session=null,preview=null;
+const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+function readSession(){try{return JSON.parse(localStorage.getItem(SESSION_KEY)||'null')}catch(_){return null}}
+function saveSession(v){session=v||null;try{if(v)localStorage.setItem(SESSION_KEY,JSON.stringify(v));else localStorage.removeItem(SESSION_KEY)}catch(_){}}
+async function parse(r){const t=await r.text();let d={};try{d=t?JSON.parse(t):{}}catch(_){d={message:t}}if(!r.ok)throw new Error(d.message||d.error_description||d.error||('Request failed ('+r.status+')'));return d}
+async function refresh(){const s=readSession();if(!s?.refresh_token)throw new Error('Please sign in from the BIG BROTHER Dashboard.');const r=await fetch(SB+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:KEY,'Content-Type':'application/json'},body:JSON.stringify({refresh_token:s.refresh_token}),cache:'no-store'});const d=await parse(r);if(!d.expires_at&&d.expires_in)d.expires_at=Math.floor(Date.now()/1000)+Number(d.expires_in);saveSession(d);return d}
+async function ensure(){session=readSession();if(!session?.access_token)throw new Error('Please sign in from the BIG BROTHER Dashboard.');if(session.expires_at&&Number(session.expires_at)<Math.floor(Date.now()/1000)+45)await refresh();return session}
+async function rpc(fn,args={}){await ensure();const req=()=>fetch(SB+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify(args),cache:'no-store'});let r=await req();if(r.status===401){await refresh();r=await req()}return parse(r)}
+function setError(message){$('errorBox').textContent=message||'';$('errorBox').hidden=!message}
+function setStatus(message,bad=false){const el=$('status');el.textContent=message||'';el.className='status '+(bad?'bad':'ok')}
+function render(){const tables=Array.isArray(preview?.tables)?preview.tables:[];$('totalRows').textContent=Number(preview?.totalRows||0).toLocaleString('en-US');$('tableCount').textContent=tables.length;$('tableBody').innerHTML=tables.map(r=>`<tr><td>${esc(r.tableName)}</td><td class="count">${Number(r.rows||0).toLocaleString('en-US')}</td></tr>`).join('')||'<tr><td colspan="2">No cleanup tables returned.</td></tr>';$('preservedList').innerHTML=(Array.isArray(preview?.preserved)?preview.preserved:[]).map(x=>`<li>${esc(x)}</li>`).join('')}
+async function load(){setError('');setStatus('');$('refreshBtn').disabled=true;try{const access=await rpc('bb_database_cleanup_access');if(!access?.allowed)throw new Error('Database Cleanup access denied. Admin role and explicit cleanup permission are required.');preview=await rpc('bb_database_cleanup_preview');if(!preview?.success)throw new Error('Could not load cleanup preview.');render();$('loading').hidden=true;$('main').hidden=false}catch(e){$('loading').hidden=true;$('main').hidden=true;setError(e?.message||String(e))}finally{$('refreshBtn').disabled=false}}
+$('confirmText').addEventListener('input',()=>{$('cleanupBtn').disabled=$('confirmText').value!==PHRASE});
+$('refreshBtn').addEventListener('click',load);
+$('cleanupBtn').addEventListener('click',async()=>{if($('confirmText').value!==PHRASE)return;if(!confirm('FINAL CONFIRMATION\n\nClear all operational TEST data listed in this preview?\n\nMaster data, users, permissions, configuration and audit logs will be preserved.'))return;const btn=$('cleanupBtn');btn.disabled=true;btn.textContent='Clearing…';setStatus('Running protected Supabase cleanup…');try{const d=await rpc('bb_database_cleanup_execute',{p_confirmation:PHRASE});setStatus((d?.message||'Cleanup completed.')+' Deleted rows: '+Number(d?.deletedRows||0).toLocaleString('en-US'));$('confirmText').value='';await load()}catch(e){setStatus(e?.message||String(e),true)}finally{btn.textContent='🧹 Clear Operational Test Data';btn.disabled=$('confirmText').value!==PHRASE}});
+if(new URLSearchParams(location.search).get('embed')==='1')document.body.classList.add('embed');
+load();
+})();
+</script>
+</body>
+</html>

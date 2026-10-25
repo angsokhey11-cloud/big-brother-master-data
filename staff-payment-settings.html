@@ -1663,14 +1663,14 @@ tbody tr:hover{background:#f9fbfe}
         p_expected_updated_at:row.updatedAt
       });
       if(!result?.success)throw new Error("Deletion was not confirmed.");
-      if(editingSalaryId===row.salaryId){
-        editingSalaryId="";
-        editingSalaryVersion="";
-        $("salaryStaff").disabled=false;
-        $("salaryDate").value=firstOfMonth();
-        $("salaryNote").value="";
-        updateSalaryMode();
-      }
+      // Deleting any salary version may shift a neighboring version's
+      // effective_to/updated_at; invalidate EVERY old editor snapshot.
+      editingSalaryId="";
+      editingSalaryVersion="";
+      $("salaryStaff").disabled=false;
+      $("salaryDate").value=firstOfMonth();
+      $("salaryNote").value="";
+      updateSalaryMode();
       await loadMaster(false);
       $("salaryStaff").value=row.staffId;
       renderSalary();

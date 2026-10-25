@@ -1643,6 +1643,10 @@ tbody tr:hover{background:#f9fbfe}
       values.p_expected_updated_at=editingSalaryVersion;
     }else{
       const history=(data.salaryHistory||[]).filter(r=>r.staffId===staffId);
+      if(history.some(r=>clean(r.effectiveFrom).slice(0,10)===effective)){
+        setStatus("salaryStatus","A salary record already exists on this effective date. Select Edit in Salary History instead of creating a new version.",true);
+        return;
+      }
       const sameMonth=history.some(r=>clean(r.effectiveFrom).slice(0,7)===effective.slice(0,7));
       const message=sameMonth?
         "This staff already has a salary version in "+effective.slice(0,7)+".\nChoose Edit in Salary History if you want to correct an old date.\n\nCreate a NEW salary version anyway?":

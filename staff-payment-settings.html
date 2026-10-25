@@ -416,6 +416,7 @@ tbody tr:hover{background:#f9fbfe}
 }
 .salary-history-edit:hover,.salary-history-edit:focus-visible{background:#dceefe;border-color:#75b2e4}
 .salary-history-active td{background:#f1f8ff!important}
+#cancelSalaryEditBtn[hidden]{display:none!important}
 .salary-form-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 
 
@@ -1494,11 +1495,15 @@ tbody tr:hover{background:#f9fbfe}
     $("salaryCurrentNote").textContent=
       `Base ${money(s.baseSalary,s.currency)} • Effective ${formatDate(s.effectiveFrom)}${s.effectiveTo ? " to "+formatDate(s.effectiveTo) : " onward"}.`;
 
-    $("salaryBase").value=num(s.baseSalary).toFixed(2);
-    $("salaryAllowance").value=num(s.allowance).toFixed(2);
-    $("salaryCommission").value=num(s.commission).toFixed(2);
-    $("salaryDeduction").value=num(s.deduction).toFixed(2);
-    $("salaryCurrency").value=clean(s.currency||"USD").toUpperCase();
+    // When correcting an existing history entry, preserve unsaved edit fields
+    // while the current salary preview or other master settings refresh.
+    if(!editingSalaryId){
+      $("salaryBase").value=num(s.baseSalary).toFixed(2);
+      $("salaryAllowance").value=num(s.allowance).toFixed(2);
+      $("salaryCommission").value=num(s.commission).toFixed(2);
+      $("salaryDeduction").value=num(s.deduction).toFixed(2);
+      $("salaryCurrency").value=clean(s.currency||"USD").toUpperCase();
+    }
   }
 
   function updateSalaryNet(){

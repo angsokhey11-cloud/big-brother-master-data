@@ -402,6 +402,22 @@ tbody tr:hover{background:#f9fbfe}
   color:#116b3b;
   font-size:20px;
 }
+.salary-edit-state{
+  display:flex;gap:8px;align-items:flex-start;flex-direction:column;
+  margin:0 0 12px;padding:10px 12px;border:1px solid #c7dbef;
+  border-radius:10px;background:#eff6ff;color:#174a80;font-size:11px;line-height:1.45;
+}
+.salary-edit-state[hidden]{display:none!important}
+.salary-edit-state strong{font-size:12px}
+.salary-action-note{color:#6b7e90;font-size:10px;line-height:1.45;margin:0 0 8px}
+.salary-history-edit{
+  appearance:none;border:1px solid #bbd5f0;background:#edf6ff;color:#1760a3;
+  border-radius:8px;padding:6px 10px;font-size:10px;font-weight:900;white-space:nowrap;cursor:pointer;
+}
+.salary-history-edit:hover,.salary-history-edit:focus-visible{background:#dceefe;border-color:#75b2e4}
+.salary-history-active td{background:#f1f8ff!important}
+.salary-form-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+
 
 @media(max-width:1050px){
   .summary-grid{grid-template-columns:repeat(2,1fr)}
@@ -616,9 +632,16 @@ tbody tr:hover{background:#f9fbfe}
         <div class="card">
           <div class="card-head">
             <strong>Staff Salary</strong>
-            <span>Effective-dated salary history</span>
+            <span>Create new versions or correct existing salary history</span>
           </div>
           <div class="card-body">
+
+            <div class="salary-action-note">To correct an existing salary, select <b>Edit</b> in Salary History. Creating a new version will add a separate effective-dated record.</div>
+            <div id="salaryEditState" class="salary-edit-state" hidden role="status" aria-live="polite">
+              <strong id="salaryEditTitle">Editing salary record</strong>
+              <span id="salaryEditDescription">This updates the selected record, not a new salary version. Paid payroll is protected.</span>
+            </div>
+
 
             <div id="salaryCurrentBox" class="current-box">
               <div class="title">Selected Staff Current Salary</div>
@@ -680,8 +703,9 @@ tbody tr:hover{background:#f9fbfe}
 
             <div id="salaryStatus" class="status-line"></div>
 
-            <div class="form-actions">
-              <button id="saveSalaryBtn" class="primary-btn">Save Staff Salary</button>
+            <div class="form-actions salary-form-actions">
+              <button id="cancelSalaryEditBtn" class="secondary-btn" type="button" hidden>Cancel Edit</button>
+              <button id="saveSalaryBtn" class="primary-btn" type="button">Create New Salary Version</button>
             </div>
           </div>
         </div>
@@ -702,6 +726,7 @@ tbody tr:hover{background:#f9fbfe}
                   <th class="money">Deduction</th>
                   <th class="money">Net</th>
                   <th>Effective</th>
+                  <th>Edit</th>
                 </tr>
               </thead>
               <tbody id="salaryRows"></tbody>
@@ -923,6 +948,8 @@ tbody tr:hover{background:#f9fbfe}
   let session = null;
   let data = null;
   let toastTimer = null;
+  let editingSalaryId = "";
+  let editingSalaryVersion = "";
 
   const $ = id => document.getElementById(id);
   const clean = v => String(v == null ? "" : v).trim();
@@ -1182,18 +1209,24 @@ tbody tr:hover{background:#f9fbfe}
   }
 
   function renderSelects(){
+    const previousSalaryStaff=$("salaryStaff").value;
+    const previousSpecialStaff=$("specialStaff").value;
+    const previousDriverLocation=$("driverLocation").value;
     const staffOptions=(data.staff||[])
       .map(s=>`<option value="${esc(s.staffId)}">${esc(s.staffName)} — ${esc(s.staffId)}</option>`)
       .join("");
 
     $("salaryStaff").innerHTML = '<option value="">Select Staff...</option>'+staffOptions;
     $("specialStaff").innerHTML = '<option value="">Select Staff...</option>'+staffOptions;
+    $("salaryStaff").value=previousSalaryStaff;
+    $("specialStaff").value=previousSpecialStaff;
 
     const locationOptions=(data.locations||[])
       .map(l=>`<option value="${esc(l.locationCode)}">${esc(l.locationCode)} — ${esc(l.locationName)}</option>`)
       .join("");
 
     $("driverLocation").innerHTML = '<option value="">Select Location...</option>'+locationOptions;
+    $("driverLocation").value=previousDriverLocation;
   }
 
   function renderSummary(){
@@ -1275,7 +1308,7 @@ tbody tr:hover{background:#f9fbfe}
 
     $("salaryCount").textContent=`${rows.length} record${rows.length===1?"":"s"}`;
     $("salaryRows").innerHTML=rows.length ? rows.map(r=>`
-      <tr>
+      <tr class="${r.salaryId===editingSalaryId?"salary-history-active":""}">
         <td><strong>${esc(r.staffName||r.staffId)}</strong><br><span style="color:#6f8195">${esc(r.staffId)}</span></td>
         <td class="money">${esc(money(r.baseSalary,r.currency))}</td>
         <td class="money">${esc(money(r.allowance,r.currency))}</td>
@@ -1283,8 +1316,9 @@ tbody tr:hover{background:#f9fbfe}
         <td class="money">${esc(money(r.deduction,r.currency))}</td>
         <td class="money"><strong>${esc(money(r.netSalary,r.currency))}</strong></td>
         <td>${esc(formatDate(r.effectiveFrom))}<br><span style="color:#6f8195">to ${esc(formatDate(r.effectiveTo))}</span></td>
+        <td><button type="button" class="salary-history-edit" data-edit-salary="${esc(r.salaryId)}" aria-label="Edit salary ${esc(r.salaryId)} for ${esc(r.staffName||r.staffId)}">Edit</button></td>
       </tr>
-    `).join("") : '<tr><td colspan="7" class="empty">No salary history for this selection.</td></tr>';
+    `).join("") : '<tr><td colspan="8" class="empty">No salary history for this selection.</td></tr>';
 
     updateSalaryCurrent();
     updateSalaryNet();
@@ -1392,6 +1426,53 @@ tbody tr:hover{background:#f9fbfe}
 
     if(d1) $("driver1Amount").value=num(d1.allowanceAmount).toFixed(2);
     if(d2) $("driver2Amount").value=num(d2.allowanceAmount).toFixed(2);
+  }
+
+  function updateSalaryMode(){
+    const editing=Boolean(editingSalaryId);
+    $("salaryEditState").hidden=!editing;
+    $("salaryStaff").disabled=editing;
+    $("cancelSalaryEditBtn").hidden=!editing;
+    $("saveSalaryBtn").textContent=editing?"Update Selected Salary":"Create New Salary Version";
+    if(editing){
+      $("salaryEditTitle").textContent="Editing "+editingSalaryId;
+      $("salaryEditDescription").textContent=
+        "Updates the same salary ID. Paid or requested salary amounts cannot change. Admin edits are audited.";
+    }
+  }
+
+  function cancelSalaryEdit(){
+    editingSalaryId="";
+    editingSalaryVersion="";
+    $("salaryDate").value=firstOfMonth();
+    $("salaryNote").value="";
+    updateSalaryMode();
+    renderSalary();
+    setStatus("salaryStatus","Edit cancelled. Create New Salary Version makes a separate history record.");
+  }
+
+  function chooseSalaryEdit(salaryId){
+    const row=(data.salaryHistory||[]).find(r=>r.salaryId===salaryId);
+    if(!row || !row.updatedAt){
+      setStatus("salaryStatus","Salary record not available; refresh Staff Payment Settings before editing.",true);
+      return;
+    }
+    editingSalaryId=salaryId;
+    editingSalaryVersion=row.updatedAt;
+    $("salaryStaff").disabled=false;
+    $("salaryStaff").value=row.staffId;
+    renderSalary();
+    $("salaryBase").value=num(row.baseSalary).toFixed(2);
+    $("salaryAllowance").value=num(row.allowance).toFixed(2);
+    $("salaryCommission").value=num(row.commission).toFixed(2);
+    $("salaryDeduction").value=num(row.deduction).toFixed(2);
+    $("salaryCurrency").value=clean(row.currency||"USD").toUpperCase();
+    $("salaryDate").value=clean(row.effectiveFrom).slice(0,10);
+    $("salaryNote").value=clean(row.note);
+    updateSalaryNet();
+    updateSalaryMode();
+    setStatus("salaryStatus","Editing "+salaryId+". Press Update Selected Salary to save changes to this record.");
+    $("salaryEditState").scrollIntoView({behavior:"smooth",block:"nearest"});
   }
 
   function updateSalaryCurrent(){
@@ -1530,32 +1611,60 @@ tbody tr:hover{background:#f9fbfe}
     const staffId=$("salaryStaff").value;
     const effective=$("salaryDate").value;
 
-    if(!staffId || !$("salaryBase").value || !effective){
+    if(!staffId || $("salaryBase").value==="" || !effective){
       setStatus("salaryStatus","Staff, Base Salary and Effective From are required.",true);
       return;
     }
-
-    setBusy(btn,true,"Saving...");
+    const values={
+      p_staff_id:staffId,
+      p_base_salary:num($("salaryBase").value),
+      p_effective_from:effective,
+      p_allowance:num($("salaryAllowance").value),
+      p_commission:num($("salaryCommission").value),
+      p_deduction:num($("salaryDeduction").value),
+      p_currency:$("salaryCurrency").value,
+      p_note:clean($("salaryNote").value)||null
+    };
+    const editing=Boolean(editingSalaryId);
+    if(editing){
+      const selected=(data.salaryHistory||[]).find(r=>r.salaryId===editingSalaryId);
+      if(!selected || selected.staffId!==staffId || !editingSalaryVersion){
+        setStatus("salaryStatus","Selected salary record has changed. Refresh then choose Edit again.",true);
+        return;
+      }
+      if(!window.confirm("Update salary record "+editingSalaryId+" for "+(selected.staffName||staffId)+
+          "?\n\nThis corrects the existing history entry; it will not create a new salary version. Paid payroll is protected."))return;
+      values.p_salary_id=editingSalaryId;
+      values.p_expected_updated_at=editingSalaryVersion;
+    }else{
+      const history=(data.salaryHistory||[]).filter(r=>r.staffId===staffId);
+      const sameMonth=history.some(r=>clean(r.effectiveFrom).slice(0,7)===effective.slice(0,7));
+      const message=sameMonth?
+        "This staff already has a salary version in "+effective.slice(0,7)+".\nChoose Edit in Salary History if you want to correct an old date.\n\nCreate a NEW salary version anyway?":
+        "Create a NEW effective-dated salary for this staff?\nThis adds a separate Salary History record. To correct an existing record, cancel and press Edit in Salary History.";
+      if(!window.confirm(message))return;
+    }
+    setBusy(btn,true,editing?"Updating...":"Saving...");
     try{
-      await rpc("bb_staff_relation_admin_save_salary",{
-        p_staff_id:staffId,
-        p_base_salary:num($("salaryBase").value),
-        p_effective_from:effective,
-        p_allowance:num($("salaryAllowance").value),
-        p_commission:num($("salaryCommission").value),
-        p_deduction:num($("salaryDeduction").value),
-        p_currency:$("salaryCurrency").value,
-        p_note:clean($("salaryNote").value)||null
-      });
-      setStatus("salaryStatus","Staff Salary saved.");
-      showToast("Staff Salary saved ✅");
+      const result=await rpc(editing?"bb_staff_relation_admin_update_salary":"bb_staff_relation_admin_save_salary",values);
+      if(!result?.success)throw new Error("Salary operation was not confirmed.");
+      editingSalaryId="";
+      editingSalaryVersion="";
+      $("salaryStaff").disabled=false;
       await loadMaster(false);
       $("salaryStaff").value=staffId;
+      $("salaryDate").value=firstOfMonth();
+      $("salaryNote").value="";
+      updateSalaryMode();
       renderSalary();
+      const message=editing?"Existing Salary History record updated.":"New Salary History version created.";
+      setStatus("salaryStatus",message);
+      showToast((editing?"Salary updated":"Salary version created")+" ✅");
     }catch(error){
       setStatus("salaryStatus",error?.message||error,true);
     }finally{
       setBusy(btn,false);
+      updateSalaryMode();
     }
   }
 
@@ -1690,13 +1799,25 @@ tbody tr:hover{background:#f9fbfe}
     $("saveIncentiveBtn").addEventListener("click",saveIncentive);
     $("saveDriverBtn").addEventListener("click",saveDriver);
     $("saveSalaryBtn").addEventListener("click",saveSalary);
+    $("cancelSalaryEditBtn").addEventListener("click",cancelSalaryEdit);
+    $("salaryRows").addEventListener("click",event=>{
+      const button=event.target.closest("[data-edit-salary]");
+      if(button)chooseSalaryEdit(button.dataset.editSalary);
+    });
     $("saveScheduleBtn").addEventListener("click",saveSchedule);
     $("saveOverrideBtn").addEventListener("click",saveOverride);
     $("saveSpecialBtn").addEventListener("click",saveSpecial);
 
     $("driverLocation").addEventListener("change",updateDriverPreview);
 
-    $("salaryStaff").addEventListener("change",renderSalary);
+    $("salaryStaff").addEventListener("change",()=>{
+      if(editingSalaryId){
+        editingSalaryId="";
+        editingSalaryVersion="";
+        updateSalaryMode();
+      }
+      renderSalary();
+    });
     ["salaryBase","salaryAllowance","salaryCommission","salaryDeduction"].forEach(id=>{
       $(id).addEventListener("input",updateSalaryNet);
     });
@@ -1718,6 +1839,7 @@ tbody tr:hover{background:#f9fbfe}
 
   bindEvents();
   setDefaults();
+  updateSalaryMode();
   loadMaster(true);
 
 })();

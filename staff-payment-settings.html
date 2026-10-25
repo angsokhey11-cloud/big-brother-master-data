@@ -415,6 +415,21 @@ tbody tr:hover{background:#f9fbfe}
   border-radius:8px;padding:6px 10px;font-size:10px;font-weight:900;white-space:nowrap;cursor:pointer;
 }
 .salary-history-edit:hover,.salary-history-edit:focus-visible{background:#dceefe;border-color:#75b2e4}
+.salary-history-actions{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.salary-history-delete{
+  appearance:none;border:1px solid #efc3bf;background:#fff5f4;color:#ab322b;
+  border-radius:8px;padding:6px 10px;font-size:10px;font-weight:900;
+  white-space:nowrap;cursor:pointer;
+}
+.salary-history-delete:hover,.salary-history-delete:focus-visible{
+  background:#ffe8e5;border-color:#d66c61
+}
+.salary-history-delete:disabled{opacity:.55;cursor:wait}
+.salary-history-help{
+  margin:10px 12px;padding:8px 10px;border:1px solid #d9e5f0;
+  border-radius:9px;background:#f7fafd;color:#526c86;
+  font-size:10px;line-height:1.5;
+}
 .salary-history-active td{background:#f1f8ff!important}
 #cancelSalaryEditBtn[hidden]{display:none!important}
 .salary-form-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
@@ -716,6 +731,10 @@ tbody tr:hover{background:#f9fbfe}
             <strong>Salary History</strong>
             <span id="salaryCount">0 records</span>
           </div>
+          <div class="salary-history-help">
+            <strong>Edit</strong> corrects a setup; <strong>Delete</strong> removes only a salary setup.
+            Each staff member can claim salary only once per month. Requested and paid salaries are protected and are never deleted here.
+          </div>
           <div class="table-wrap">
             <table>
               <thead>
@@ -727,7 +746,7 @@ tbody tr:hover{background:#f9fbfe}
                   <th class="money">Deduction</th>
                   <th class="money">Net</th>
                   <th>Effective</th>
-                  <th>Edit</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="salaryRows"></tbody>
@@ -1317,7 +1336,10 @@ tbody tr:hover{background:#f9fbfe}
         <td class="money">${esc(money(r.deduction,r.currency))}</td>
         <td class="money"><strong>${esc(money(r.netSalary,r.currency))}</strong></td>
         <td>${esc(formatDate(r.effectiveFrom))}<br><span style="color:#6f8195">to ${esc(formatDate(r.effectiveTo))}</span></td>
-        <td><button type="button" class="salary-history-edit" data-edit-salary="${esc(r.salaryId)}" aria-label="Edit salary ${esc(r.salaryId)} for ${esc(r.staffName||r.staffId)}">Edit</button></td>
+        <td><div class="salary-history-actions">
+          <button type="button" class="salary-history-edit" data-edit-salary="${esc(r.salaryId)}" aria-label="Edit salary ${esc(r.salaryId)} for ${esc(r.staffName||r.staffId)}">Edit</button>
+          <button type="button" class="salary-history-delete" data-delete-salary="${esc(r.salaryId)}" aria-label="Delete salary setup ${esc(r.salaryId)} for ${esc(r.staffName||r.staffId)}">Delete</button>
+        </div></td>
       </tr>
     `).join("") : '<tr><td colspan="8" class="empty">No salary history for this selection.</td></tr>';
 
@@ -1610,6 +1632,57 @@ tbody tr:hover{background:#f9fbfe}
     }
   }
 
+  async function deleteSalary(salaryId,button){
+    const row=(data.salaryHistory||[]).find(r=>r.salaryId===salaryId);
+    if(!row || !row.updatedAt){
+      setStatus("salaryStatus","Salary setup changed. Refresh Staff Payment Settings before deleting.",true);
+      return;
+    }
+    const label=row.staffName||row.staffId;
+    const warning="DELETE SALARY SETUP\n\n"+
+      label+"\n"+salaryId+"\nEffective: "+formatDate(row.effectiveFrom)+
+      (row.effectiveTo?" to "+formatDate(row.effectiveTo):" onward")+
+      "\nSalary: "+money(row.netSalary,row.currency)+
+      "\n\nThis removes ONLY the selected effective-dated salary setup."+
+      "\nAlready requested or paid salaries are never deleted or duplicated."+
+      "\nIf the change would affect one, BIG BROTHER will block deletion."+
+      "\n\nType DELETE to confirm:";
+    const confirmation=window.prompt(warning,"");
+    if(confirmation!=="DELETE"){
+      if(confirmation!==null){
+        setStatus("salaryStatus","Delete cancelled. Type exactly DELETE to confirm.",true);
+      }
+      return;
+    }
+    setStatus("salaryStatus","");
+    setBusy(button,true,"Deleting...");
+    try{
+      const result=await rpc("bb_staff_relation_admin_delete_salary",{
+        p_salary_id:row.salaryId,
+        p_staff_id:row.staffId,
+        p_expected_updated_at:row.updatedAt
+      });
+      if(!result?.success)throw new Error("Deletion was not confirmed.");
+      if(editingSalaryId===row.salaryId){
+        editingSalaryId="";
+        editingSalaryVersion="";
+        $("salaryStaff").disabled=false;
+        $("salaryDate").value=firstOfMonth();
+        $("salaryNote").value="";
+        updateSalaryMode();
+      }
+      await loadMaster(false);
+      $("salaryStaff").value=row.staffId;
+      renderSalary();
+      setStatus("salaryStatus","Salary setup "+salaryId+" deleted. Payment history is unchanged; action logged.");
+      showToast("Salary setup deleted; paid earnings protected ✅");
+    }catch(error){
+      setStatus("salaryStatus",error?.message||error,true);
+    }finally{
+      setBusy(button,false);
+    }
+  }
+
   async function saveSalary(){
     const btn=$("saveSalaryBtn");
     setStatus("salaryStatus","");
@@ -1810,8 +1883,13 @@ tbody tr:hover{background:#f9fbfe}
     $("saveSalaryBtn").addEventListener("click",saveSalary);
     $("cancelSalaryEditBtn").addEventListener("click",cancelSalaryEdit);
     $("salaryRows").addEventListener("click",event=>{
-      const button=event.target.closest("[data-edit-salary]");
-      if(button)chooseSalaryEdit(button.dataset.editSalary);
+      const target=event.target.closest("button");
+      if(!target)return;
+      if(target.matches("[data-edit-salary]")){
+        chooseSalaryEdit(target.dataset.editSalary);
+      }else if(target.matches("[data-delete-salary]")){
+        deleteSalary(target.dataset.deleteSalary,target);
+      }
     });
     $("saveScheduleBtn").addEventListener("click",saveSchedule);
     $("saveOverrideBtn").addEventListener("click",saveOverride);
